@@ -1,0 +1,38 @@
+:root {
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #1a1a2e;
+  --neon-pink: #ff006e;
+  --neon-blue: #00d4ff;
+  --neon-green: #00ff88;
+  --text-primary: #ffffff;
+  --text-secondary: #b8b8b8;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+  color: var(--text-primary);
+  font-family: 'Poppins', sans-serif;
+  min-height: 100vh;
+}
+
+.glow-effect {
+  text-shadow: 0 0 20px currentColor, 0 0 40px currentColor;
+}
+
+.neon-border {
+  border: 2px solid var(--neon-blue);
+  box-shadow: 0 0 15px var(--neon-blue), inset 0 0 15px rgba(0, 212, 255, 0.1);
+  border-radius: 15px;
+}
+
+.glass-effect {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+}

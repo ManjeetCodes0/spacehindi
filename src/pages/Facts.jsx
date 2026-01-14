@@ -1,33 +1,38 @@
-import Navbar from "../components/Navbar";
-import FactCard from "../components/FactCard";
+import React from 'react';
 
-export default function Facts() {
+const Facts = () => {
+  const allFacts = [
+    { hindi: "चंद्रमा हर साल 3.8 cm दूर जा रहा है", english: "The Moon moves 3.8 cm away each year", emoji: "🌙" },
+    { hindi: "बृहस्पति पर हीरे की बारिश होती है", english: "It rains diamonds on Jupiter", emoji: "💎" },
+    { hindi: "सूर्य में 13 लाख पृथ्वी समा सकती हैं", english: "1.3 million Earths could fit inside the Sun", emoji: "☀️" },
+    { hindi: "शुक्र पर एक दिन एक साल से लंबा है", english: "A day on Venus is longer than its year", emoji: "🪐" },
+    { hindi: "मंगल पर सूर्यास्त नीला होता है", english: "Sunsets on Mars are blue", emoji: "🌅" },
+    { hindi: "अंतरिक्ष में आवाज़ नहीं सुनाई देती", english: "There is no sound in space", emoji: "🔇" }
+  ];
+
   return (
-    <>
-      <Navbar />
-
-      <section className="px-8 py-16 max-w-6xl mx-auto">
-        <h2 className="text-3xl font-bold mb-10">
-          🔭 रोचक स्पेस फैक्ट्स
-        </h2>
-
-        <div className="grid md:grid-cols-3 gap-8">
-          <FactCard
-            title="ब्लैक होल और समय"
-            text="ब्लैक होल के पास समय इतना धीमा हो जाता है कि बाहर से देखने पर चीजें कभी गिरती ही नहीं दिखतीं।"
-          />
-
-          <FactCard
-            title="अंधेरा अंतरिक्ष"
-            text="अंतरिक्ष पूरी तरह काला नहीं है। वहाँ गैस और ऊर्जा की हल्की चमक हर जगह फैली हुई है।"
-          />
-
-          <FactCard
-            title="ब्रह्मांड का अंत?"
-            text="वैज्ञानिक आज भी नहीं जानते कि ब्रह्मांड हमेशा फैलता रहेगा या एक दिन समाप्त हो जाएगा।"
-          />
-        </div>
-      </section>
-    </>
+    <div className="fade-in">
+      <h1 className="gradient-text" style={{fontSize: '40px', marginBottom: '30px', textAlign: 'center'}}>
+        🌠 Amazing Space Facts
+      </h1>
+      
+      <div className="grid grid-2">
+        {allFacts.map((fact, index) => (
+          <div key={index} className="glass-effect" style={{cursor: 'pointer'}}>
+            <div style={{fontSize: '48px', marginBottom: '15px', textAlign: 'center'}}>
+              {fact.emoji}
+            </div>
+            <h3 style={{color: '#ff006e', marginBottom: '10px', fontSize: '18px'}}>
+              {fact.hindi}
+            </h3>
+            <p style={{opacity: 0.7, fontSize: '14px'}}>
+              {fact.english}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
   );
-}
+};
+
+export default Facts;

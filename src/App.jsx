@@ -1,16 +1,36 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import Facts from "./pages/Facts";
-import About from "./pages/About";
+import React, { useState } from 'react';
+import Navbar from './components/common/Navbar';
+import Footer from './components/common/Footer';
+import Home from './pages/Home';
+import Facts from './pages/Facts';
+import About from './pages/About';
+import './index.css';
 
-export default function App() {
+function App() {
+  const [currentPage, setCurrentPage] = useState('home');
+
+  const renderPage = () => {
+    switch(currentPage) {
+      case 'home':
+        return <Home />;
+      case 'facts':
+        return <Facts />;
+      case 'about':
+        return <About />;
+      default:
+        return <Home />;
+    }
+  };
+
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/facts" element={<Facts />} />
-        <Route path="/about" element={<About />} />
-      </Routes>
-    </BrowserRouter>
+    <div className="app-container">
+      <Navbar setCurrentPage={setCurrentPage} currentPage={currentPage} />
+      <main className="main-content">
+        {renderPage()}
+      </main>
+      <Footer />
+    </div>
   );
 }
+
+export default App;
