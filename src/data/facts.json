@@ -1,0 +1,84 @@
+{
+  "categories": [
+    {
+      "id": "planets",
+      "name": "ग्रह",
+      "nameEn": "Planets",
+      "icon": "🪐",
+      "description": "सौर मंडल के ग्रहों के बारे में रोचक तथ्य",
+      "color": "from-blue-500 to-green-500"
+    },
+    {
+      "id": "stars",
+      "name": "तारे",
+      "nameEn": "Stars",
+      "icon": "⭐",
+      "description": "तारों और नक्षत्रों के बारे में जानकारी",
+      "color": "from-yellow-500 to-orange-500"
+    },
+    {
+      "id": "galaxies",
+      "name": "आकाशगंगा",
+      "nameEn": "Galaxies",
+      "icon": "🌠",
+      "description": "आकाशगंगाओं की अद्भुत दुनिया",
+      "color": "from-indigo-500 to-purple-500"
+    },
+    {
+      "id": "blackholes",
+      "name": "ब्लैक होल",
+      "nameEn": "Black Holes",
+      "icon": "⚫",
+      "description": "ब्लैक होल के रहस्य",
+      "color": "from-gray-700 to-black"
+    },
+    {
+      "id": "missions",
+      "name": "अंतरिक्ष मिशन",
+      "nameEn": "Space Missions",
+      "icon": "🚀",
+      "description": "मानव अंतरिक्ष अन्वेषण",
+      "color": "from-red-500 to-pink-500"
+    }
+  ],
+  "facts": [
+    {
+      "id": 1,
+      "category": "planets",
+      "factHi": "बृहस्पति का Great Red Spot एक तूफान है जो 350 से अधिक वर्षों से चल रहा है।",
+      "factEn": "Jupiter's Great Red Spot is a storm that has been raging for over 350 years.",
+      "difficulty": "easy",
+      "source": "NASA",
+      "year": 2023,
+      "tags": ["jupiter", "storms", "gas giants"],
+      "imageUrl": "/images/facts/jupiter-red-spot.jpg",
+      "videoUrl": "https://youtube.com/watch?v=example",
+      "likes": 245,
+      "views": 1523
+    },
+    {
+      "id": 2,
+      "category": "stars",
+      "factHi": "न्यूट्रॉन तारे के एक चम्मच पदार्थ का वजन पृथ्वी पर लगभग 6 बिलियन टन होगा।",
+      "factEn": "A teaspoon of neutron star material would weigh about 6 billion tons on Earth.",
+      "difficulty": "medium",
+      "source": "ESA",
+      "year": 2023,
+      "tags": ["neutron stars", "density", "gravity"],
+      "likes": 189,
+      "views": 987
+    },
+    {
+      "id": 3,
+      "category": "galaxies",
+      "factHi": "मिल्की वे और एंड्रोमेडा आकाशगंगाएं लगभग 4.5 बिलियन वर्षों में टकराएंगी।",
+      "factEn": "The Milky Way and Andromeda galaxies will collide in about 4.5 billion years.",
+      "difficulty": "medium",
+      "source": "Hubble",
+      "year": 2023,
+      "tags": ["milky way", "andromeda", "collision"],
+      "likes": 312,
+      "views": 2145
+    }
+  ]
+}

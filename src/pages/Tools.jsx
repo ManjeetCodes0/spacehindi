@@ -3,7 +3,7 @@ import WeightCalculator from '../components/tools/WeightCalculator';
 import SpaceAgeCalculator from '../components/tools/SpaceAgeCalculator';
 import UniverseScale from '../components/tools/UniverseScale';
 import ISSTracker from '../components/tools/ISSTracker';
-import AdSlot from '../components/common/AdSlot';
+// import AdSlot from '../components/common/AdSlot';
 
 const Tools = () => {
   const tools = [
@@ -51,7 +51,7 @@ const Tools = () => {
         <div className="tools-list space-y-8">
           {tools.map((tool, index) => (
             <React.Fragment key={tool.id}>
-              {index > 0 && <AdSlot type="between-tools" />}
+              {/* {index > 0 && <AdSlot type="between-tools" />} */}
               <div className="tool-section">
                 <div className="tool-header text-center mb-6">
                   <span className="text-5xl">{tool.emoji}</span>
