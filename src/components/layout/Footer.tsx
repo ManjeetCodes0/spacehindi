@@ -16,6 +16,7 @@ const footerLinks = {
     { href: "/blog", label: { en: "Blog", hi: "ब्लॉग" } },
     { href: "/shop", label: { en: "Shop", hi: "शॉप" } },
     { href: "/about", label: { en: "About Us", hi: "हमारे बारे में" } },
+    { href: "/contact", label: { en: "Contact Us", hi: "हमसे संपर्क करें" } },
   ],
   legal: [
     { href: "/privacy", label: { en: "Privacy Policy", hi: "गोपनीयता नीति" } },
