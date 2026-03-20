@@ -1,0 +1,161 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* ===== ScienceHindi 360 — Space Design System ===== */
+
+:root {
+  /* Core Palette */
+  --space-black: #050510;
+  --space-deep: #0a0a1a;
+  --space-surface: #111128;
+  --space-elevated: #1a1a3e;
+  --space-border: #2a2a5a;
+
+  /* Neon Accents */
+  --neon-violet: #8b5cf6;
+  --neon-violet-glow: #7c3aed;
+  --neon-blue: #3b82f6;
+  --neon-blue-glow: #2563eb;
+  --neon-pink: #ec4899;
+  --neon-pink-glow: #db2777;
+  --neon-cyan: #06b6d4;
+  --neon-green: #10b981;
+
+  /* Text */
+  --text-primary: #f0f0ff;
+  --text-secondary: #a0a0c0;
+  --text-muted: #6b6b8a;
+
+  /* Glass */
+  --glass-bg: rgba(17, 17, 40, 0.6);
+  --glass-border: rgba(139, 92, 246, 0.15);
+  --glass-hover: rgba(139, 92, 246, 0.25);
+
+  /* Shadows */
+  --shadow-neon: 0 0 20px rgba(139, 92, 246, 0.3);
+  --shadow-neon-strong: 0 0 40px rgba(139, 92, 246, 0.5);
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
+
+  /* Radii */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@theme inline {
+  --color-space-black: var(--space-black);
+  --color-space-deep: var(--space-deep);
+  --color-space-surface: var(--space-surface);
+  --color-space-elevated: var(--space-elevated);
+  --color-space-border: var(--space-border);
+
+  --color-neon-violet: var(--neon-violet);
+  --color-neon-violet-glow: var(--neon-violet-glow);
+  --color-neon-blue: var(--neon-blue);
+  --color-neon-blue-glow: var(--neon-blue-glow);
+  --color-neon-pink: var(--neon-pink);
+  --color-neon-pink-glow: var(--neon-pink-glow);
+  --color-neon-cyan: var(--neon-cyan);
+  --color-neon-green: var(--neon-green);
+
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+
+  --font-sans: var(--font-inter);
+  --font-hindi: var(--font-noto-sans-devanagari);
+}
+
+/* ===== Base Styles ===== */
+
+body {
+  background: var(--space-black);
+  color: var(--text-primary);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--space-deep);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--space-border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--neon-violet);
+}
+
+/* Selection */
+::selection {
+  background: rgba(139, 92, 246, 0.3);
+  color: var(--text-primary);
+}
+
+/* ===== Utility Classes ===== */
+
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+}
+
+.glass-hover:hover {
+  border-color: var(--glass-hover);
+  box-shadow: var(--shadow-neon);
+}
+
+.neon-glow {
+  box-shadow: var(--shadow-neon);
+}
+
+.neon-glow-strong {
+  box-shadow: var(--shadow-neon-strong);
+}
+
+.text-gradient-violet {
+  background: linear-gradient(135deg, var(--neon-violet), var(--neon-pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-blue {
+  background: linear-gradient(135deg, var(--neon-blue), var(--neon-cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Hide scrollbar for horizontal scrollers */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/* Star field background animation */
+.stars-bg {
+  background-image:
+    radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,0.3), transparent),
+    radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.2), transparent),
+    radial-gradient(1px 1px at 90px 40px, rgba(255,255,255,0.4), transparent),
+    radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.2), transparent),
+    radial-gradient(2px 2px at 160px 30px, rgba(255,255,255,0.3), transparent);
+  background-size: 200px 100px;
+  background-repeat: repeat;
+}
