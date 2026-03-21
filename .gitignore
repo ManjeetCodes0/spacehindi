@@ -1,8 +1,6 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-/node_modules
-/.pnp
+# ── Dependencies ──────────────────────────────────────────────────
+node_modules/
+.pnp
 .pnp.*
 .yarn/*
 !.yarn/patches
@@ -10,32 +8,47 @@
 !.yarn/releases
 !.yarn/versions
 
-# testing
-/coverage
+# ── Build output ─────────────────────────────────────────────────
+.next/
+out/
+dist/
+build/
+*.tsbuildinfo
+next-env.d.ts
 
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
-.DS_Store
+# ── Secrets & credentials (NEVER commit) ─────────────────────────
+.env
+.env.*
+!.env.example
+gcp-key.json
+*-credentials.json
+*-key.json
 *.pem
+*.key
+*.p12
+service-account*.json
+deploy-prod.ps1
 
-# debug
+# ── IDE & OS ─────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ── Claude Code local settings ───────────────────────────────────
+.claude/settings.local.json
+
+# ── Sanity studio build ──────────────────────────────────────────
+.sanity/
+
+# ── Debug logs ───────────────────────────────────────────────────
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
-
-# vercel
+# ── Misc ─────────────────────────────────────────────────────────
 .vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+coverage/

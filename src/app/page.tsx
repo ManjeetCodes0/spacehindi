@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { Navbar, Space3DHero, Footer } from "@/components/layout";
+import { useLang } from "@/context/LanguageContext";
 import {
   SpaceNumbers,
   PlanetGallery,
@@ -17,11 +17,11 @@ import {
 const YOUTUBE_CHANNEL_ID = "UC-RlDqNNv7hCl2cEgi8ux8A";
 
 export default function Home() {
-  const [lang, setLang] = useState<"en" | "hi">("en");
+  const { lang } = useLang();
 
   return (
     <>
-      <Navbar lang={lang} onToggleLang={() => setLang(lang === "en" ? "hi" : "en")} />
+      <Navbar />
       <main className="bg-space-black">
         <Space3DHero lang={lang} />
 
@@ -51,7 +51,7 @@ export default function Home() {
           <NewsletterCTA lang={lang} />
         </div>
       </main>
-      <Footer lang={lang} />
+      <Footer />
     </>
   );
 }

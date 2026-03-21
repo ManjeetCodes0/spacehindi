@@ -3,20 +3,18 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLang } from "@/context/LanguageContext";
 
 const navLinks = [
+  { href: "/universe", label: { en: "Universe", hi: "ब्रह्मांड" } },
   { href: "/tools", label: { en: "Tools", hi: "उपकरण" } },
   { href: "/shop", label: { en: "Shop", hi: "शॉप" } },
   { href: "/blog", label: { en: "Blog", hi: "ब्लॉग" } },
   { href: "/events", label: { en: "Live Events", hi: "लाइव इवेंट्स" } },
 ];
 
-interface NavbarProps {
-  lang: "en" | "hi";
-  onToggleLang: () => void;
-}
-
-export default function Navbar({ lang, onToggleLang }: NavbarProps) {
+export default function Navbar() {
+  const { lang, toggleLang } = useLang();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -90,7 +88,7 @@ export default function Navbar({ lang, onToggleLang }: NavbarProps) {
           <div className="flex items-center gap-3">
             {/* Language Toggle */}
             <button
-              onClick={onToggleLang}
+              onClick={toggleLang}
               className="
                 relative flex items-center w-[72px] h-8 rounded-full
                 bg-space-elevated border border-space-border

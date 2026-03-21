@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { inter, notoDevanagari, spaceGrotesk } from "@/lib/fonts";
+import { LanguageProvider } from "@/context/LanguageContext";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -27,7 +28,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${notoDevanagari.variable} ${spaceGrotesk.variable} antialiased`}
       >
-        {children}
+        <LanguageProvider>{children}</LanguageProvider>
       </body>
     </html>
   );

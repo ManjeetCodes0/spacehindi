@@ -1,10 +1,7 @@
 "use client";
 
 import Link from "next/link";
-
-interface FooterProps {
-  lang: "en" | "hi";
-}
+import { useLang } from "@/context/LanguageContext";
 
 const footerLinks = {
   explore: [
@@ -64,7 +61,8 @@ const socialLinks = [
   },
 ];
 
-export default function Footer({ lang }: FooterProps) {
+export default function Footer() {
+  const { lang } = useLang();
   return (
     <footer className="relative border-t border-white/[0.06] bg-space-deep">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">

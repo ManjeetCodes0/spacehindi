@@ -1,9 +1,9 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { blogPosts, categoryColors } from "@/data/blog";
-import { Badge } from "@/components/ui";
+import type { DeepDivePost } from "@/types/deep-dive";
 
 interface FeaturedBlogProps {
   lang: "en" | "hi";
@@ -16,7 +16,7 @@ const text = {
     subtitle: "Deep dives into astrophysics, missions, and the science shaping our future",
     readMore: "Read Article",
     viewAll: "View All Articles",
-    min: "min read",
+    deepDive: "Deep Dive",
   },
   hi: {
     badge: "ब्लॉग से",
@@ -24,14 +24,31 @@ const text = {
     subtitle: "खगोल भौतिकी, मिशनों और हमारे भविष्य को आकार देने वाले विज्ञान की गहन जानकारी",
     readMore: "लेख पढ़ें",
     viewAll: "सभी लेख देखें",
-    min: "मिनट पठन",
+    deepDive: "गहन विश्लेषण",
   },
 };
 
 export default function FeaturedBlog({ lang }: FeaturedBlogProps) {
   const t = text[lang];
-  const featured = blogPosts.filter((p) => p.featured).slice(0, 1);
-  const recent = blogPosts.filter((p) => !p.featured).slice(0, 4);
+  const [posts, setPosts] = useState<DeepDivePost[]>([]);
+
+  useEffect(() => {
+    async function fetchPosts() {
+      try {
+        const res = await fetch("/api/deep-dive");
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data)) setPosts(data.slice(0, 5));
+        }
+      } catch {
+        // Silently fail
+      }
+    }
+    fetchPosts();
+  }, []);
+
+  const featured = posts[0];
+  const recent = posts.slice(1, 5);
 
   return (
     <section className="py-16 sm:py-24">
@@ -70,107 +87,118 @@ export default function FeaturedBlog({ lang }: FeaturedBlogProps) {
         </motion.p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
-        {/* Featured post — large card */}
-        {featured.map((post) => {
-          const catColor = categoryColors[post.category];
-          return (
+      {/* No posts yet */}
+      {posts.length === 0 && (
+        <div className="text-center py-8">
+          <p className="text-sm text-text-muted">
+            {lang === "en" ? "Articles coming soon..." : "लेख जल्द आ रहे हैं..."}
+          </p>
+        </div>
+      )}
+
+      {posts.length > 0 && (
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
+          {/* Featured post — large card */}
+          {featured && (
             <motion.div
-              key={post.slug}
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
               className="lg:col-span-3"
             >
-              <Link href={`/blog/${post.slug}`} className="block group h-full">
-                <div
-                  className="
-                    relative h-full min-h-[320px] rounded-2xl overflow-hidden
-                    border border-white/[0.07]
-                    hover:border-white/[0.15]
-                    transition-all duration-300
-                  "
-                >
-                  {/* BG gradient */}
-                  <div
-                    className="absolute inset-0"
-                    style={{ background: post.image }}
-                  />
+              <Link href={`/blog/${featured.slug.current}`} className="block group h-full">
+                <div className="relative h-full min-h-[320px] rounded-2xl overflow-hidden border border-white/[0.07] hover:border-white/[0.15] transition-all duration-300">
+                  {featured.mainImage?.asset?.url ? (
+                    <img
+                      src={featured.mainImage.asset.url}
+                      alt={featured.titleEnglish}
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div
+                      className="absolute inset-0"
+                      style={{ background: "linear-gradient(135deg, #1a0533 0%, #0c1445 50%, #050510 100%)" }}
+                    />
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-[rgba(5,5,16,0.95)] via-[rgba(5,5,16,0.5)] to-transparent" />
 
-                  {/* Content */}
                   <div className="relative h-full flex flex-col justify-end p-6 sm:p-8">
-                    <Badge variant={catColor.badge}>{post.categoryLabel[lang]}</Badge>
+                    <span className="inline-flex self-start items-center gap-1.5 px-2.5 py-1 rounded-full bg-neon-cyan/15 text-neon-cyan border border-neon-cyan/25 text-[10px] font-semibold">
+                      {t.deepDive}
+                    </span>
                     <h3
-                      className="text-xl sm:text-2xl font-bold text-text-primary mt-3 mb-2 group-hover:text-white transition-colors"
+                      className="text-lg sm:text-xl font-bold text-text-primary mt-3 mb-1 group-hover:text-white transition-colors"
+                      style={{ fontFamily: "var(--font-noto-sans-devanagari), var(--font-space-grotesk), system-ui" }}
+                    >
+                      {lang === "hi" ? featured.titleHindi : featured.titleEnglish}
+                    </h3>
+                    <p
+                      className="text-sm text-text-muted line-clamp-1 mb-3"
                       style={{ fontFamily: "var(--font-space-grotesk)" }}
                     >
-                      {post.title[lang]}
-                    </h3>
-                    <p className="text-sm text-text-secondary line-clamp-2 mb-4">
-                      {post.excerpt[lang]}
+                      {lang === "hi" ? featured.titleEnglish : featured.titleHindi}
                     </p>
                     <div className="flex items-center gap-3 text-xs text-text-muted">
-                      <span>{post.author.name}</span>
+                      <span>{featured.authorName || "Manjeet Singh"}</span>
                       <span>·</span>
-                      <span>{post.readingTime} {t.min}</span>
+                      <span>{featured.sourceName}</span>
                       <span>·</span>
-                      <span>{new Date(post.date).toLocaleDateString(lang === "hi" ? "hi-IN" : "en-US", { month: "short", day: "numeric" })}</span>
+                      <span>
+                        {new Date(featured.publishedAt).toLocaleDateString(
+                          lang === "hi" ? "hi-IN" : "en-US",
+                          { month: "short", day: "numeric" }
+                        )}
+                      </span>
                     </div>
                   </div>
                 </div>
               </Link>
             </motion.div>
-          );
-        })}
+          )}
 
-        {/* Recent posts — stacked cards */}
-        <div className="lg:col-span-2 flex flex-col gap-4">
-          {recent.map((post, i) => {
-            const catColor = categoryColors[post.category];
-            return (
-              <motion.div
-                key={post.slug}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.08, duration: 0.4 }}
-              >
-                <Link href={`/blog/${post.slug}`} className="block group">
-                  <div
-                    className="
-                      p-4 rounded-xl
-                      bg-[rgba(17,17,40,0.55)] backdrop-blur-xl
-                      border border-white/[0.07]
-                      hover:border-white/[0.15]
-                      transition-all duration-300
-                    "
-                  >
-                    <div className="flex items-start gap-3">
-                      {/* Color dot */}
-                      <div
-                        className="w-2 h-2 rounded-full mt-1.5 shrink-0"
-                        style={{ backgroundColor: catColor.glow.replace("0.3", "1") }}
-                      />
-                      <div className="flex-1 min-w-0">
-                        <h4 className="text-sm font-medium text-text-primary group-hover:text-white transition-colors line-clamp-2 leading-snug">
-                          {post.title[lang]}
-                        </h4>
-                        <div className="flex items-center gap-2 mt-2 text-[11px] text-text-muted">
-                          <span>{post.readingTime} {t.min}</span>
-                          <span>·</span>
-                          <span>{post.categoryLabel[lang]}</span>
+          {/* Recent posts — stacked cards */}
+          {recent.length > 0 && (
+            <div className="lg:col-span-2 flex flex-col gap-4">
+              {recent.map((post, i) => (
+                <motion.div
+                  key={post._id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.08, duration: 0.4 }}
+                >
+                  <Link href={`/blog/${post.slug.current}`} className="block group">
+                    <div className="p-4 rounded-xl bg-[rgba(17,17,40,0.55)] backdrop-blur-xl border border-white/[0.07] hover:border-white/[0.15] transition-all duration-300">
+                      <div className="flex items-start gap-3">
+                        <div className="w-2 h-2 rounded-full mt-1.5 shrink-0 bg-neon-cyan" />
+                        <div className="flex-1 min-w-0">
+                          <h4
+                            className="text-sm font-medium text-text-primary group-hover:text-white transition-colors line-clamp-2 leading-snug"
+                            style={{ fontFamily: "var(--font-noto-sans-devanagari), var(--font-space-grotesk), system-ui" }}
+                          >
+                            {lang === "hi" ? post.titleHindi : post.titleEnglish}
+                          </h4>
+                          <div className="flex items-center gap-2 mt-2 text-[11px] text-text-muted">
+                            <span>{post.sourceName}</span>
+                            <span>·</span>
+                            <span>
+                              {new Date(post.publishedAt).toLocaleDateString(
+                                lang === "hi" ? "hi-IN" : "en-US",
+                                { month: "short", day: "numeric" }
+                              )}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                </Link>
-              </motion.div>
-            );
-          })}
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
-      </div>
+      )}
 
       {/* View all CTA */}
       <motion.div

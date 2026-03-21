@@ -1,15 +1,15 @@
 "use client";
 
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { Navbar, Footer } from "@/components/layout";
+import { useLang } from "@/context/LanguageContext";
 
 export default function PrivacyPolicyPage() {
-  const [lang, setLang] = useState<"en" | "hi">("en");
+  const { lang } = useLang();
 
   return (
     <>
-      <Navbar lang={lang} onToggleLang={() => setLang(lang === "en" ? "hi" : "en")} />
+      <Navbar />
       <main className="min-h-screen bg-space-black pt-24 pb-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -52,7 +52,7 @@ export default function PrivacyPolicyPage() {
           </motion.article>
         </div>
       </main>
-      <Footer lang={lang} />
+      <Footer />
     </>
   );
 }

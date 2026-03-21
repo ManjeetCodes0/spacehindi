@@ -1,18 +1,18 @@
 "use client";
 
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { Navbar, Footer } from "@/components/layout";
 import { GlassPanel, Badge } from "@/components/ui";
+import { useLang } from "@/context/LanguageContext";
 
 export default function AboutPage() {
-  const [lang, setLang] = useState<"en" | "hi">("en");
+  const { lang } = useLang();
 
   const t = lang === "en" ? en : hi;
 
   return (
     <>
-      <Navbar lang={lang} onToggleLang={() => setLang(lang === "en" ? "hi" : "en")} />
+      <Navbar />
       <main className="min-h-screen bg-space-black pt-24 pb-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Hero */}
@@ -193,7 +193,7 @@ export default function AboutPage() {
           </motion.div>
         </div>
       </main>
-      <Footer lang={lang} />
+      <Footer />
     </>
   );
 }
