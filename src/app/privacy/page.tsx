@@ -64,7 +64,7 @@ function PrivacyEN() {
         At <strong>ScienceHindi 360</strong> (accessible at <strong>sciencehindi.in</strong>), we are committed to protecting the privacy of our visitors. This Privacy Policy document outlines the types of information that is collected and recorded by ScienceHindi 360 and how we use it.
       </p>
       <p>
-        If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us at <strong>contact@sciencehindi.in</strong>.
+        If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us at <strong>sciencehindi360@gmail.com</strong>.
       </p>
 
       <h2>Information We Collect</h2>
@@ -126,7 +126,7 @@ function PrivacyEN() {
 
       <h2>Contact Us</h2>
       <p>
-        If you have any questions about this Privacy Policy, you can contact us at <strong>contact@sciencehindi.in</strong>.
+        If you have any questions about this Privacy Policy, you can contact us at <strong>sciencehindi360@gmail.com</strong>.
       </p>
     </>
   );
@@ -139,7 +139,7 @@ function PrivacyHI() {
         <strong>ScienceHindi 360</strong> (<strong>sciencehindi.in</strong> पर उपलब्ध) में, हम अपने आगंतुकों की गोपनीयता की रक्षा के लिए प्रतिबद्ध हैं। यह गोपनीयता नीति दस्तावेज़ ScienceHindi 360 द्वारा एकत्र और रिकॉर्ड की जाने वाली जानकारी के प्रकारों और हम उसका उपयोग कैसे करते हैं, इसकी रूपरेखा प्रस्तुत करता है।
       </p>
       <p>
-        यदि आपके पास अतिरिक्त प्रश्न हैं या हमारी गोपनीयता नीति के बारे में अधिक जानकारी चाहते हैं, तो <strong>contact@sciencehindi.in</strong> पर हमसे संपर्क करने में संकोच न करें।
+        यदि आपके पास अतिरिक्त प्रश्न हैं या हमारी गोपनीयता नीति के बारे में अधिक जानकारी चाहते हैं, तो <strong>sciencehindi360@gmail.com</strong> पर हमसे संपर्क करने में संकोच न करें।
       </p>
 
       <h2>हम कौन सी जानकारी एकत्र करते हैं</h2>
@@ -198,7 +198,7 @@ function PrivacyHI() {
 
       <h2>हमसे संपर्क करें</h2>
       <p>
-        यदि इस गोपनीयता नीति के बारे में आपका कोई प्रश्न है, तो आप <strong>contact@sciencehindi.in</strong> पर हमसे संपर्क कर सकते हैं।
+        यदि इस गोपनीयता नीति के बारे में आपका कोई प्रश्न है, तो आप <strong>sciencehindi360@gmail.com</strong> पर हमसे संपर्क कर सकते हैं।
       </p>
     </>
   );

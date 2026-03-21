@@ -1,4 +1,4 @@
-import { Inter, Noto_Sans_Devanagari, Space_Grotesk } from "next/font/google";
+import { Inter, Noto_Sans_Devanagari, Playfair_Display } from "next/font/google";
 
 export const inter = Inter({
   variable: "--font-inter",
@@ -13,8 +13,9 @@ export const notoDevanagari = Noto_Sans_Devanagari({
   weight: ["400", "500", "600", "700"],
 });
 
-export const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
+export const playfairDisplay = Playfair_Display({
+  variable: "--font-playfair",
   subsets: ["latin"],
   display: "swap",
+  weight: ["400", "500", "600", "700", "800", "900"],
 });

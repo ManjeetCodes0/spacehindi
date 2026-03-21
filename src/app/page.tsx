@@ -22,7 +22,7 @@ export default function Home() {
   return (
     <>
       <Navbar />
-      <main className="bg-space-black">
+      <main style={{ background: "var(--bg-primary)" }}>
         <Space3DHero lang={lang} />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

@@ -53,7 +53,7 @@ export const celestialBodies: CelestialBody[] = [
     },
     color: "#a0a0a0",
     gradient: "radial-gradient(circle at 35% 30%, #c8c8c8 0%, #8a8a8a 40%, #5a5a5a 80%)",
-    videoId: "0KBjnNuhRHs",
+    videoId: "dG2CGf5B1bI",
     stats: {
       mass: { value: "3.30 × 10²³", unit: "kg" },
       diameter: { value: "4,879", unit: "km" },
@@ -80,7 +80,7 @@ export const celestialBodies: CelestialBody[] = [
     },
     color: "#e8a84c",
     gradient: "radial-gradient(circle at 35% 30%, #f0c060 0%, #d4903a 40%, #a06020 80%)",
-    videoId: "BvXa1n9fjow",
+    videoId: "OCql4mA07d8",
     stats: {
       mass: { value: "4.87 × 10²⁴", unit: "kg" },
       diameter: { value: "12,104", unit: "km" },
@@ -107,7 +107,7 @@ export const celestialBodies: CelestialBody[] = [
     },
     color: "#10b981",
     gradient: "radial-gradient(circle at 35% 30%, #34d399 0%, #059669 40%, #064e3b 80%)",
-    videoId: "HCDVN7DCzYE",
+    videoId: "Fy0dOL81qWs",
     // Earth has the 240-frame sequence from the hero
     frames: {
       folder: "/earthview",
@@ -142,7 +142,7 @@ export const celestialBodies: CelestialBody[] = [
     },
     color: "#ec4899",
     gradient: "radial-gradient(circle at 35% 30%, #f87171 0%, #dc2626 40%, #7f1d1d 80%)",
-    videoId: "D8pnmwOXhoY",
+    videoId: "CLm0eluuUHs",
     stats: {
       mass: { value: "6.42 × 10²³", unit: "kg" },
       diameter: { value: "6,779", unit: "km" },
@@ -169,7 +169,7 @@ export const celestialBodies: CelestialBody[] = [
     },
     color: "#f59e0b",
     gradient: "radial-gradient(circle at 35% 30%, #fbbf24 0%, #d97706 35%, #92400e 70%, #5a3010 90%)",
-    videoId: "PtkqwslbLY8",
+    videoId: "RlS-S8oDzzY",
     stats: {
       mass: { value: "1.90 × 10²⁷", unit: "kg" },
       diameter: { value: "139,820", unit: "km" },
@@ -197,7 +197,7 @@ export const celestialBodies: CelestialBody[] = [
     color: "#a78bfa",
     gradient: "radial-gradient(circle at 35% 30%, #ddd6b0 0%, #c4a86c 40%, #8a7040 80%)",
     ring: true,
-    videoId: "epZdZaEQhS0",
+    videoId: "xVQEHip7Z4s",
     stats: {
       mass: { value: "5.68 × 10²⁶", unit: "kg" },
       diameter: { value: "116,460", unit: "km" },
@@ -225,7 +225,7 @@ export const celestialBodies: CelestialBody[] = [
     color: "#06b6d4",
     gradient: "radial-gradient(circle at 35% 30%, #67e8f9 0%, #0891b2 40%, #164e63 80%)",
     ring: true,
-    videoId: "m4NXbFOl7OU",
+    videoId: "xjemYaNDaEI",
     stats: {
       mass: { value: "8.68 × 10²⁵", unit: "kg" },
       diameter: { value: "50,724", unit: "km" },
@@ -252,7 +252,7 @@ export const celestialBodies: CelestialBody[] = [
     },
     color: "#3b82f6",
     gradient: "radial-gradient(circle at 35% 30%, #60a5fa 0%, #2563eb 40%, #1e3a5f 80%)",
-    videoId: "NStn7zZKXfE",
+    videoId: "3HWHMJwbpQY",
     stats: {
       mass: { value: "1.02 × 10²⁶", unit: "kg" },
       diameter: { value: "49,244", unit: "km" },

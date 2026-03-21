@@ -152,7 +152,7 @@ function TermsEN() {
 
       <h2>11. Contact Us</h2>
       <p>
-        If you have any questions about these Terms of Service, please contact us at <strong>contact@sciencehindi.in</strong>.
+        If you have any questions about these Terms of Service, please contact us at <strong>sciencehindi360@gmail.com</strong>.
       </p>
     </>
   );
@@ -240,7 +240,7 @@ function TermsHI() {
 
       <h2>11. हमसे संपर्क करें</h2>
       <p>
-        यदि इन सेवा की शर्तों के बारे में आपका कोई प्रश्न है, तो कृपया <strong>contact@sciencehindi.in</strong> पर हमसे संपर्क करें।
+        यदि इन सेवा की शर्तों के बारे में आपका कोई प्रश्न है, तो कृपया <strong>sciencehindi360@gmail.com</strong> पर हमसे संपर्क करें।
       </p>
     </>
   );

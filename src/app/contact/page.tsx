@@ -180,7 +180,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <p className="text-sm font-medium text-text-primary">{t.emailTitle}</p>
-                    <p className="text-xs text-text-muted">contact@sciencehindi.in</p>
+                    <p className="text-xs text-text-muted">sciencehindi360@gmail.com</p>
                   </div>
                 </div>
               </GlassPanel>

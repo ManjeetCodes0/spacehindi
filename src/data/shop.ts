@@ -1,177 +1,172 @@
-export type ShopCategory = "telescopes" | "kits" | "books" | "astrophotography";
+export type ShopCategory = "Astronaut Statue" | "Keychains" | "Books";
 
 export interface Product {
   id: string;
-  name: { en: string; hi: string };
-  description: { en: string; hi: string };
+  title: string;
+  hindiTitle: string;
+  description: string;
+  hindiDescription: string;
+  imageURL: string;
+  affiliateLink: string;
   category: ShopCategory;
-  price: string;
-  rating: number; // 1-5
-  reviews: number;
-  badge?: "choice" | "bestseller" | "new";
-  affiliateUrl: string;
-  image: string; // gradient placeholder
 }
 
-export const shopCategories: { id: ShopCategory; label: { en: string; hi: string }; icon: string }[] = [
+export const shopCategories: { id: ShopCategory; label: { en: string; hi: string } }[] = [
   {
-    id: "telescopes",
-    label: { en: "Telescopes", hi: "टेलीस्कोप" },
-    icon: "M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z",
+    id: "Astronaut Statue",
+    label: { en: "Astronaut Statues", hi: "एस्ट्रोनॉट स्टैच्यू" },
   },
   {
-    id: "kits",
-    label: { en: "Space Kits", hi: "स्पेस किट" },
-    icon: "M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z",
+    id: "Keychains",
+    label: { en: "Keychains", hi: "कीचेन" },
   },
   {
-    id: "books",
-    label: { en: "Science Books", hi: "विज्ञान पुस्तकें" },
-    icon: "M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25",
-  },
-  {
-    id: "astrophotography",
-    label: { en: "Astrophotography", hi: "एस्ट्रोफोटोग्राफी" },
-    icon: "M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z M16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z",
+    id: "Books",
+    label: { en: "Books", hi: "पुस्तकें" },
   },
 ];
 
+export const sectionHeadings: Record<ShopCategory, { en: string; hi: string; subtitle: { en: string; hi: string } }> = {
+  "Astronaut Statue": {
+    en: "Astronaut Statues",
+    hi: "एस्ट्रोनॉट स्टैच्यू",
+    subtitle: {
+      en: "Bring the cosmos to your desk — handpicked space figurines for science lovers.",
+      hi: "ब्रह्मांड को अपनी डेस्क पर लाएं — विज्ञान प्रेमियों के लिए चुनिंदा स्पेस फिगरिन।",
+    },
+  },
+  Keychains: {
+    en: "Space Keychains",
+    hi: "स्पेस कीचेन",
+    subtitle: {
+      en: "Carry your passion for space everywhere you go.",
+      hi: "अपने अंतरिक्ष के जुनून को हर जगह साथ ले जाएं।",
+    },
+  },
+  Books: {
+    en: "Must-Read Space Books",
+    hi: "ज़रूर पढ़ें स्पेस बुक्स",
+    subtitle: {
+      en: "Essential reads that will transform how you see the universe.",
+      hi: "ज़रूरी किताबें जो ब्रह्मांड को देखने का आपका नज़रिया बदल देंगी।",
+    },
+  },
+};
+
 export const products: Product[] = [
-  // Telescopes
-  // Telescopes
+  // ── ASTRONAUT STATUES ──
   {
-    id: "celestron-nexstar-8se",
-    name: { en: "Celestron NexStar 8SE Telescope", hi: "सेलेस्ट्रॉन नेक्सस्टार 8SE टेलीस्कोप" },
-    description: {
-      en: "Computerized GoTo telescope with 8\" aperture. Perfect for deep-sky and planetary viewing.",
-      hi: "8\" अपर्चर के साथ कम्प्यूटराइज़्ड GoTo टेलीस्कोप। डीप-स्काई और ग्रह दर्शन के लिए बेहतरीन।",
-    },
-    category: "telescopes",
-    price: "$1,199",
-    rating: 4.7,
-    reviews: 2840,
-    badge: "choice",
-    affiliateUrl: "https://www.amazon.in/dp/B001NB8S4I?tag=yourtag-21",
-    image: "linear-gradient(135deg, #0a2e1a 0%, #111128 50%, #1a0533 100%)",
+    id: "resin-astronaut-golden",
+    title: "Resin Astronaut Set (3 Pcs) - Golden",
+    hindiTitle: "रेज़िन एस्ट्रोनॉट सेट (3 पीस) - गोल्डन",
+    description: "Adds a premium cosmic aesthetic to your workspace; perfect for science enthusiasts.",
+    hindiDescription: "आपके वर्कस्पेस को प्रीमियम कॉस्मिक लुक देता है; विज्ञान प्रेमियों के लिए बेस्ट।",
+    affiliateLink: "https://amzn.to/47XuUli",
+    imageURL: "https://m.media-amazon.com/images/I/51k0ihjuRyL.SL1010.jpg",
+    category: "Astronaut Statue",
   },
   {
-    id: "sky-watcher-dobsonian-8",
-    name: { en: "Sky-Watcher 8\" Dobsonian", hi: "स्काई-वॉचर 8\" डॉब्सोनियन" },
-    description: {
-      en: "Classic Dobsonian design with excellent light-gathering. Best value for serious beginners.",
-      hi: "उत्कृष्ट प्रकाश-संग्रहण के साथ क्लासिक डॉब्सोनियन डिज़ाइन। गंभीर शुरुआती लोगों के लिए सर्वोत्तम।",
-    },
-    category: "telescopes",
-    price: "$449",
-    rating: 4.5,
-    reviews: 1560,
-    badge: "bestseller",
-    affiliateUrl: "https://www.amazon.in/dp/B07KQZHHM5?tag=yourtag-21",
-    image: "linear-gradient(135deg, #1a1a3e 0%, #111128 50%, #0a0a1a 100%)",
+    id: "pvc-blue-astronaut-trio",
+    title: "PVC Blue Astronaut Trio",
+    hindiTitle: "PVC ब्लू एस्ट्रोनॉट ट्रायो",
+    description: "Durable PVC material with vibrant detailing; great for a modern tech-desk setup.",
+    hindiDescription: "वाइब्रेंट डिटेल्स के साथ टिकाऊ PVC मटेरियल; मॉडर्न टेक-डेस्क सेटअप के लिए बेहतरीन।",
+    affiliateLink: "https://amzn.to/4d2Y463",
+    imageURL: "https://m.media-amazon.com/images/I/61zkacH9bRL.SL1500.jpg",
+    category: "Astronaut Statue",
   },
   {
-    id: "celestron-starsense-explorer",
-    name: { en: "Celestron StarSense Explorer DX 130", hi: "सेलेस्ट्रॉन स्टारसेंस एक्सप्लोरर DX 130" },
-    description: {
-      en: "App-enabled Newtonian with smartphone StarSense technology for effortless navigation.",
-      hi: "स्मार्टफोन स्टारसेंस तकनीक के साथ ऐप-सक्षम न्यूटोनियन। आसान नेविगेशन।",
-    },
-    category: "telescopes",
-    price: "$399",
-    rating: 4.3,
-    reviews: 890,
-    affiliateUrl: "https://www.amazon.in/dp/B083QNWVHQ?tag=yourtag-21",
-    image: "linear-gradient(135deg, #0c1445 0%, #111128 50%, #050510 100%)",
-  },
-  // Space Kits
-  {
-    id: "isro-space-model-kit",
-    name: { en: "ISRO GSLV Mk III Model Kit", hi: "ISRO GSLV Mk III मॉडल किट" },
-    description: {
-      en: "1:100 scale model of India's heaviest rocket. Educational and collectible.",
-      hi: "भारत के सबसे भारी रॉकेट का 1:100 स्केल मॉडल। शैक्षिक और संग्रहणीय।",
-    },
-    category: "kits",
-    price: "$34",
-    rating: 4.6,
-    reviews: 420,
-    badge: "choice",
-    affiliateUrl: "https://www.amazon.in/dp/B0BXYZ1234?tag=yourtag-21",
-    image: "linear-gradient(135deg, #064e3b 0%, #111128 50%, #050510 100%)",
+    id: "reading-on-moon-figurine",
+    title: "Reading on Moon Figurine",
+    hindiTitle: "चाँद पर पाठक मूर्ति",
+    description: "A symbolic \"Reader on the Moon\" statue that inspires curiosity and peaceful study sessions.",
+    hindiDescription: "\"चाँद पर पाठक\" की एक प्रतीकात्मक मूर्ति जो जिज्ञासा और शांत अध्ययन के लिए प्रेरित करती है।",
+    affiliateLink: "https://amzn.to/4lGD6fH",
+    imageURL: "https://m.media-amazon.com/images/I/81639zuD5tL.SL1500.jpg",
+    category: "Astronaut Statue",
   },
   {
-    id: "national-geographic-space-kit",
-    name: { en: "National Geographic Space Science Kit", hi: "नेशनल जियोग्राफिक स्पेस साइंस किट" },
-    description: {
-      en: "Launch rockets, build a solar system, and explore constellations. Ages 8+.",
-      hi: "रॉकेट लॉन्च करें, सौरमंडल बनाएं, और तारामंडल खोजें। 8+ आयु।",
-    },
-    category: "kits",
-    price: "$29",
-    rating: 4.4,
-    reviews: 1120,
-    badge: "bestseller",
-    affiliateUrl: "https://www.amazon.in/dp/B07ND7NKQP?tag=yourtag-21",
-    image: "linear-gradient(135deg, #1a0533 0%, #0c1445 50%, #050510 100%)",
-  },
-  // Books
-  {
-    id: "cosmos-carl-sagan",
-    name: { en: "Cosmos — Carl Sagan", hi: "कॉस्मोस — कार्ल सेगन" },
-    description: {
-      en: "The timeless classic that ignited a generation's passion for space and science.",
-      hi: "वह कालातीत क्लासिक जिसने एक पीढ़ी का अंतरिक्ष और विज्ञान के प्रति जुनून जगाया।",
-    },
-    category: "books",
-    price: "$14",
-    rating: 4.9,
-    reviews: 12500,
-    badge: "choice",
-    affiliateUrl: "https://www.amazon.in/dp/0345539435?tag=yourtag-21",
-    image: "linear-gradient(135deg, #2d0a3e 0%, #0c1445 50%, #050510 100%)",
+    id: "astronaut-phone-stand-blue",
+    title: "Astronaut Phone Stand (Blue)",
+    hindiTitle: "एस्ट्रोनॉट फोन स्टैंड (ब्लू)",
+    description: "Functional space-art that holds your phone while serving as a creative desktop ornament.",
+    hindiDescription: "फंक्शनल स्पेस-आर्ट जो आपके फोन को संभालता है और डेस्कटॉप को क्रिएटिव लुक देता है।",
+    affiliateLink: "https://amzn.to/4lOveJ8",
+    imageURL: "https://m.media-amazon.com/images/I/51O+l3CNNeL.jpg",
+    category: "Astronaut Statue",
   },
   {
-    id: "brief-answers-hawking",
-    name: { en: "Brief Answers to Big Questions — Hawking", hi: "बड़े सवालों के संक्षिप्त जवाब — हॉकिंग" },
-    description: {
-      en: "Stephen Hawking's final book addresses the universe's most fundamental questions.",
-      hi: "स्टीफन हॉकिंग की अंतिम पुस्तक ब्रह्मांड के सबसे मौलिक प्रश्नों को संबोधित करती है।",
-    },
-    category: "books",
-    price: "$11",
-    rating: 4.8,
-    reviews: 8900,
-    affiliateUrl: "https://www.amazon.in/dp/1984819194?tag=yourtag-21",
-    image: "linear-gradient(135deg, #0a1a2e 0%, #1a0533 50%, #050510 100%)",
-  },
-  // Astrophotography
-  {
-    id: "zwo-asi533mc-pro",
-    name: { en: "ZWO ASI533MC Pro Camera", hi: "ZWO ASI533MC प्रो कैमरा" },
-    description: {
-      en: "Cooled color astro camera with zero amp glow. Perfect for deep-sky imaging.",
-      hi: "कूल्ड कलर एस्ट्रो कैमरा। डीप-स्काई इमेजिंग के लिए बेहतरीन।",
-    },
-    category: "astrophotography",
-    price: "$799",
-    rating: 4.6,
-    reviews: 340,
-    badge: "new",
-    affiliateUrl: "https://www.amazon.in/dp/B08PCZMPX5?tag=yourtag-21",
-    image: "linear-gradient(135deg, #0a0a1a 0%, #1a1a3e 50%, #0c1445 100%)",
+    id: "vrb-dectm-golden-set",
+    title: "VRB DecTM 3Pcs Big Golden Set",
+    hindiTitle: "VRB DecTM 3 पीस बड़ा गोल्डन सेट",
+    description: "Larger-than-life golden spacemen perfect for home decor or car dashboards.",
+    hindiDescription: "होम डेकोर या कार डैशबोर्ड के लिए बड़े आकार के शानदार सुनहरे एस्ट्रोनॉट।",
+    affiliateLink: "https://amzn.to/3NTDnzc",
+    imageURL: "https://m.media-amazon.com/images/I/71XOUxZJEoL.SL1080.jpg",
+    category: "Astronaut Statue",
   },
   {
-    id: "star-tracker-mount",
-    name: { en: "iOptron SkyGuider Pro", hi: "iOptron स्काईगाइडर प्रो" },
-    description: {
-      en: "Portable star tracker mount for DSLR astrophotography. Ultra-precise polar alignment.",
-      hi: "DSLR एस्ट्रोफोटोग्राफी के लिए पोर्टेबल स्टार ट्रैकर माउंट।",
-    },
-    category: "astrophotography",
-    price: "$458",
-    rating: 4.5,
-    reviews: 720,
-    affiliateUrl: "https://www.amazon.in/dp/B01I2OEORO?tag=yourtag-21",
-    image: "linear-gradient(135deg, #111128 0%, #1a0533 50%, #050510 100%)",
+    id: "accuprints-pvc-golden",
+    title: "AccuPrints PVC Statue (Golden)",
+    hindiTitle: "AccuPrints PVC स्टैच्यू (गोल्डन)",
+    description: "Compact 4.2\" high-quality figurine that fits perfectly in small shelf spaces.",
+    hindiDescription: "कॉम्पैक्ट 4.2\" हाई-क्वालिटी मूर्ति जो छोटे शेल्फ स्पेस में पूरी तरह फिट बैठती है।",
+    affiliateLink: "https://amzn.to/4dB70Qj",
+    imageURL: "https://m.media-amazon.com/images/I/41rM6+jY1kL.jpg",
+    category: "Astronaut Statue",
+  },
+
+  // ── KEYCHAINS ──
+  {
+    id: "double-pendant-space-keyring",
+    title: "Double Pendant Space Keyring",
+    hindiTitle: "डबल पेंडेंट स्पेस कीरिंग",
+    description: "Stylish metal hook design with detailed astronaut charms for car and bike keys.",
+    hindiDescription: "कार और बाइक की चाबियों के लिए विस्तृत एस्ट्रोनॉट चार्म के साथ स्टाइलिश मेटल हुक डिजाइन।",
+    affiliateLink: "https://amzn.to/41jkJE1",
+    imageURL: "https://m.media-amazon.com/images/I/61VZzE4cN5L.SX679.jpg",
+    category: "Keychains",
+  },
+  {
+    id: "wolpin-spaceman-keyring",
+    title: "Wolpin Spaceman Keyring",
+    hindiTitle: "Wolpin स्पेसमैन कीरिंग",
+    description: "A sleek, lightweight accessory for space lovers to carry their passion everywhere.",
+    hindiDescription: "अंतरिक्ष प्रेमियों के लिए अपने जुनून को हर जगह ले जाने के लिए एक स्लीक और हल्का एक्सेसरी।",
+    affiliateLink: "https://amzn.to/4smpCYP",
+    imageURL: "https://m.media-amazon.com/images/I/71yztCHmoJL.SX679.jpg",
+    category: "Keychains",
+  },
+  {
+    id: "3d-silicone-cartoon-keychain",
+    title: "3D Silicone Cartoon Keychain",
+    hindiTitle: "3D सिलिकॉन कार्टून कीचेन",
+    description: "Soft-touch 3D silicone material that is durable and cute for bags or purses.",
+    hindiDescription: "सॉफ्ट-टच 3D सिलिकॉन मटेरियल जो बैग या पर्स के लिए टिकाऊ और प्यारा है।",
+    affiliateLink: "https://amzn.to/3PmV1vH",
+    imageURL: "https://m.media-amazon.com/images/I/81L3RRCwWnL.SX679.jpg",
+    category: "Keychains",
+  },
+
+  // ── BOOKS ──
+  {
+    id: "space-encyclopedia-8-book",
+    title: "Space Encyclopedia (8-Book Collection)",
+    hindiTitle: "स्पेस एनसाइक्लोपीडिया (8-पुस्तक संग्रह)",
+    description: "The ultimate guide for young astronomy explorers to master the solar system.",
+    hindiDescription: "सौर मंडल में महारत हासिल करने के लिए युवा खगोल विज्ञान खोजकर्ताओं के लिए अंतिम मार्गदर्शिका।",
+    affiliateLink: "https://amzn.to/4uJmBDA",
+    imageURL: "https://m.media-amazon.com/images/I/81PZEckZAUL.SY342.jpg",
+    category: "Books",
+  },
+  {
+    id: "theory-of-everything-hawking",
+    title: "The Theory of Everything — Stephen Hawking",
+    hindiTitle: "द थ्योरी ऑफ एवरीथिंग — स्टीफन हॉकिंग",
+    description: "A must-read journey into the cosmos, black holes, and the origin of our universe.",
+    hindiDescription: "ब्रह्मांड, ब्लैक होल और हमारे ब्रह्मांड की उत्पत्ति की एक अनिवार्य यात्रा।",
+    affiliateLink: "https://amzn.to/4sjfRL0",
+    imageURL: "https://m.media-amazon.com/images/I/61fR6OnVBUL.SL1276.jpg",
+    category: "Books",
   },
 ];

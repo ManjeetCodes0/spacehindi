@@ -65,7 +65,7 @@ export async function GET(request: Request) {
     );
 
     for (const result of oEmbedChecks) {
-      if (filtered.length >= 6) break;
+      if (filtered.length >= 3) break;
       if (result.status === "fulfilled" && !result.value.isShort) {
         filtered.push(result.value.entry);
       }

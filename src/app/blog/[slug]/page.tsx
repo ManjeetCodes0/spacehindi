@@ -17,11 +17,10 @@ function ReadingProgressBar() {
 
   return (
     <motion.div
-      className="fixed top-0 left-0 right-0 h-[3px] z-[60] origin-left"
+      className="fixed top-0 left-0 right-0 h-[2px] z-[60] origin-left"
       style={{
         scaleX,
-        background: "linear-gradient(90deg, #3b82f6, #06b6d4, #22d3ee)",
-        boxShadow: "0 0 12px rgba(59,130,246,0.5), 0 0 24px rgba(6,182,212,0.3)",
+        background: "var(--accent)",
       }}
     />
   );
@@ -34,13 +33,12 @@ function AdSlot({ className = "" }: { className?: string }) {
     <div
       className={`my-8 rounded-xl overflow-hidden ${className}`}
       style={{
-        background: "rgba(17,17,40,0.3)",
-        border: "1px dashed rgba(255,255,255,0.08)",
+        background: "var(--glass-bg)",
+        border: "1px dashed var(--glass-border)",
         minHeight: "90px",
       }}
     >
-      {/* AdSense slot — replace with actual ad code */}
-      <div className="flex items-center justify-center h-full min-h-[90px] text-xs text-text-muted/40">
+      <div className="flex items-center justify-center h-full min-h-[90px] text-xs" style={{ color: "var(--text-muted)" }}>
         Ad Space
       </div>
     </div>
@@ -60,14 +58,17 @@ function TableOfContents({
 
   return (
     <nav
-      className="p-5 rounded-2xl backdrop-blur-xl mb-6"
+      className="p-5 rounded-2xl mb-6"
       style={{
-        background: "rgba(17,17,40,0.5)",
-        border: "1px solid rgba(255,255,255,0.07)",
+        background: "var(--glass-bg)",
+        border: "1px solid var(--glass-border)",
       }}
     >
-      <h3 className="text-sm font-semibold text-text-primary mb-3 flex items-center gap-2">
-        <svg className="w-4 h-4 text-neon-cyan" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <h3
+        className="text-sm font-semibold mb-3 flex items-center gap-2"
+        style={{ color: "var(--text-primary)" }}
+      >
+        <svg className="w-4 h-4" style={{ color: "var(--accent)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
         </svg>
         {lang === "en" ? "Table of Contents" : "विषय सूची"}
@@ -77,9 +78,10 @@ function TableOfContents({
           <li key={section._key || i}>
             <a
               href={`#section-${i}`}
-              className="text-xs text-text-muted hover:text-neon-cyan transition-colors flex items-center gap-2"
+              className="text-xs hover:opacity-80 transition-colors flex items-center gap-2"
+              style={{ color: "var(--text-muted)" }}
             >
-              <span className="text-neon-cyan/50 font-mono text-[10px]">{String(i + 1).padStart(2, "0")}</span>
+              <span className="font-mono text-[10px]" style={{ color: "var(--accent)" }}>{String(i + 1).padStart(2, "0")}</span>
               {lang === "hi" ? section.headingHi : section.headingEn}
             </a>
           </li>
@@ -110,18 +112,21 @@ function ArticleSection({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.5 }}
-      className="scroll-mt-24"
+      className="scroll-mt-20"
     >
       <h2
-        className="text-xl sm:text-2xl font-bold text-text-primary mb-4 flex items-center gap-3"
-        style={{ fontFamily: "var(--font-noto-sans-devanagari), var(--font-space-grotesk), system-ui" }}
+        className="text-xl sm:text-2xl font-bold mb-4 flex items-center gap-3"
+        style={{
+          fontFamily: "var(--font-noto-sans-devanagari), var(--font-playfair), system-ui",
+          color: "var(--text-primary)",
+        }}
       >
         <span
           className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold"
           style={{
-            background: "rgba(139,92,246,0.12)",
-            color: "#8b5cf6",
-            border: "1px solid rgba(139,92,246,0.25)",
+            background: "var(--accent-muted)",
+            color: "var(--accent)",
+            border: "1px solid var(--accent-muted)",
           }}
         >
           {index + 1}
@@ -131,22 +136,22 @@ function ArticleSection({
 
       {/* Section image */}
       {section.sectionImage?.asset?.url && (
-        <div className="relative rounded-xl overflow-hidden my-5 border border-white/[0.06]">
+        <div className="relative rounded-xl overflow-hidden my-5" style={{ border: "1px solid var(--glass-border)" }}>
           <img
             src={section.sectionImage.asset.url}
             alt={lang === "hi" ? section.headingHi : section.headingEn}
-            className="w-full h-48 sm:h-56 object-cover"
+            className="w-full h-48 sm:h-56 object-cover max-w-full"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
         </div>
       )}
 
       <div
-        className="prose prose-invert prose-base max-w-none prose-p:text-text-secondary prose-p:leading-relaxed prose-strong:text-text-primary"
+        className="prose prose-invert prose-base max-w-none prose-p:leading-relaxed"
         style={{
           fontFamily: lang === "hi"
             ? "var(--font-noto-sans-devanagari), var(--font-inter), system-ui"
             : "var(--font-inter), system-ui",
+          color: "var(--text-secondary)",
         }}
       >
         {content.split("\n").map((para, i) => {
@@ -180,19 +185,13 @@ function InfographicFacts({
       <div
         className="relative rounded-2xl p-6 sm:p-8 overflow-hidden"
         style={{
-          background: "rgba(0,0,0,0.6)",
-          border: "1.5px solid rgba(16,185,129,0.35)",
-          boxShadow: "0 0 20px rgba(16,185,129,0.1), inset 0 1px 0 rgba(16,185,129,0.1)",
+          background: "var(--glass-bg)",
+          border: "1px solid rgba(16,185,129,0.25)",
         }}
       >
-        <div
-          className="absolute top-0 left-0 w-32 h-32 pointer-events-none"
-          style={{ background: "radial-gradient(circle, rgba(16,185,129,0.15) 0%, transparent 70%)" }}
-        />
-
         <h3
-          className="text-lg font-bold text-neon-green mb-5 flex items-center gap-2"
-          style={{ fontFamily: "var(--font-space-grotesk)" }}
+          className="text-lg font-bold mb-5 flex items-center gap-2"
+          style={{ fontFamily: "var(--font-playfair), Georgia, serif", color: "#10b981" }}
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456z" />
@@ -213,16 +212,19 @@ function InfographicFacts({
               <span
                 className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold mt-0.5"
                 style={{
-                  background: "rgba(16,185,129,0.15)",
+                  background: "rgba(16,185,129,0.12)",
                   color: "#10b981",
-                  border: "1px solid rgba(16,185,129,0.3)",
+                  border: "1px solid rgba(16,185,129,0.25)",
                 }}
               >
                 {i + 1}
               </span>
               <p
-                className="text-sm text-text-secondary leading-relaxed"
-                style={{ fontFamily: "var(--font-noto-sans-devanagari), var(--font-inter), system-ui" }}
+                className="text-sm leading-relaxed"
+                style={{
+                  fontFamily: "var(--font-noto-sans-devanagari), var(--font-inter), system-ui",
+                  color: "var(--text-secondary)",
+                }}
               >
                 {fact}
               </p>
@@ -253,10 +255,10 @@ function ScienceCorner({
       className="my-10"
     >
       <h3
-        className="text-lg font-bold text-text-primary mb-5 flex items-center gap-2"
-        style={{ fontFamily: "var(--font-space-grotesk)" }}
+        className="text-lg font-bold mb-5 flex items-center gap-2"
+        style={{ fontFamily: "var(--font-playfair), Georgia, serif", color: "var(--text-primary)" }}
       >
-        <svg className="w-5 h-5 text-neon-violet" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <svg className="w-5 h-5" style={{ color: "var(--accent)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0112 15a9.065 9.065 0 00-6.23.693L5 14.5m14.8.8l1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0112 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5" />
         </svg>
         {lang === "en" ? "Science Corner" : "विज्ञान कोना"}
@@ -272,18 +274,17 @@ function ScienceCorner({
             transition={{ delay: i * 0.1 }}
             className="relative rounded-xl p-4 overflow-hidden"
             style={{
-              background: "rgba(0,0,0,0.5)",
-              border: "1px solid rgba(139,92,246,0.2)",
-              boxShadow: "0 0 15px rgba(139,92,246,0.08), 0 0 30px rgba(139,92,246,0.04)",
+              background: "var(--glass-bg)",
+              border: "1px solid var(--accent-muted)",
             }}
           >
-            <p className="text-sm font-bold text-neon-violet mb-2" style={{ fontFamily: "var(--font-space-grotesk)" }}>
+            <p className="text-sm font-bold mb-2" style={{ fontFamily: "var(--font-playfair), Georgia, serif", color: "var(--accent)" }}>
               {item.term}
             </p>
-            <p className="text-xs text-text-secondary leading-relaxed mb-1" style={{ fontFamily: "var(--font-noto-sans-devanagari), system-ui" }}>
+            <p className="text-xs leading-relaxed mb-1" style={{ fontFamily: "var(--font-noto-sans-devanagari), system-ui", color: "var(--text-secondary)" }}>
               {lang === "hi" ? item.definitionHi : item.definitionEn}
             </p>
-            <p className="text-xs text-text-muted leading-relaxed italic">
+            <p className="text-xs leading-relaxed italic" style={{ color: "var(--text-muted)" }}>
               {lang === "hi" ? item.definitionEn : item.definitionHi}
             </p>
           </motion.div>
@@ -312,10 +313,10 @@ function FAQSection({
       className="my-10"
     >
       <h3
-        className="text-lg font-bold text-text-primary mb-5 flex items-center gap-2"
-        style={{ fontFamily: "var(--font-space-grotesk)" }}
+        className="text-lg font-bold mb-5 flex items-center gap-2"
+        style={{ fontFamily: "var(--font-playfair), Georgia, serif", color: "var(--text-primary)" }}
       >
-        <svg className="w-5 h-5 text-neon-pink" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <svg className="w-5 h-5" style={{ color: "var(--accent)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
         </svg>
         {lang === "en" ? "Frequently Asked Questions" : "अक्सर पूछे जाने वाले प्रश्न"}
@@ -327,28 +328,33 @@ function FAQSection({
             key={item._key || i}
             className="group rounded-xl overflow-hidden"
             style={{
-              background: "rgba(0,0,0,0.4)",
-              border: "1px solid rgba(255,255,255,0.06)",
+              background: "var(--glass-bg)",
+              border: "1px solid var(--glass-border)",
             }}
           >
             <summary
-              className="flex items-center justify-between cursor-pointer p-4 sm:p-5 text-sm font-medium text-text-primary hover:text-white transition-colors list-none"
-              style={{ fontFamily: "var(--font-noto-sans-devanagari), var(--font-space-grotesk), system-ui" }}
+              className="flex items-center justify-between cursor-pointer p-4 sm:p-5 text-sm font-medium transition-colors list-none"
+              style={{
+                fontFamily: "var(--font-noto-sans-devanagari), var(--font-playfair), system-ui",
+                color: "var(--text-primary)",
+              }}
             >
               {lang === "hi" ? item.questionHi : item.questionEn}
               <svg
-                className="w-4 h-4 text-text-muted group-open:rotate-180 transition-transform flex-shrink-0 ml-3"
+                className="w-4 h-4 group-open:rotate-180 transition-transform flex-shrink-0 ml-3"
+                style={{ color: "var(--text-muted)" }}
                 fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
               >
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
               </svg>
             </summary>
             <div
-              className="px-4 sm:px-5 pb-4 sm:pb-5 text-sm text-text-secondary leading-relaxed"
+              className="px-4 sm:px-5 pb-4 sm:pb-5 text-sm leading-relaxed"
               style={{
                 fontFamily: lang === "hi"
                   ? "var(--font-noto-sans-devanagari), var(--font-inter), system-ui"
                   : "var(--font-inter), system-ui",
+                color: "var(--text-secondary)",
               }}
             >
               {lang === "hi" ? item.answerHi : item.answerEn}
@@ -366,15 +372,15 @@ function Tags({ tags }: { tags?: string[] }) {
   if (!tags || tags.length === 0) return null;
 
   return (
-    <div className="flex flex-wrap gap-2 my-6">
+    <div className="flex flex-wrap gap-2 mb-4">
       {tags.map((tag) => (
         <span
           key={tag}
           className="px-2.5 py-1 rounded-full text-[10px] font-medium uppercase tracking-wider"
           style={{
-            background: "rgba(139,92,246,0.1)",
-            color: "rgba(139,92,246,0.7)",
-            border: "1px solid rgba(139,92,246,0.15)",
+            background: "var(--accent-muted)",
+            color: "var(--accent)",
+            border: "1px solid var(--accent-muted)",
           }}
         >
           {tag}
@@ -445,113 +451,105 @@ function DeepDiveArticle({
   const hasSections = post.sections && post.sections.length > 0;
 
   return (
-    <article className="py-8 sm:py-12">
+    <article className="pt-4 pb-8 sm:pt-6 sm:pb-12">
       <StructuredData post={post} lang={lang} />
 
-      {/* Back link */}
-      <motion.div
-        initial={{ opacity: 0, x: -12 }}
-        animate={{ opacity: 1, x: 0 }}
-        className="mb-8"
+      {/* Back link — compact */}
+      <Link
+        href="/blog"
+        className="inline-flex items-center gap-1.5 text-xs mb-4 transition-colors"
+        style={{ color: "var(--text-muted)" }}
       >
-        <Link
-          href="/blog"
-          className="inline-flex items-center gap-2 text-sm text-text-muted hover:text-text-secondary transition-colors group"
-        >
-          <svg className="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-          </svg>
-          {lang === "en" ? "Back to Blog" : "ब्लॉग पर वापस"}
-        </Link>
-      </motion.div>
+        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+        </svg>
+        {lang === "en" ? "Back" : "वापस"}
+      </Link>
 
       <div className="flex gap-10 lg:gap-14 relative">
         {/* Main content */}
         <div className="flex-1 min-w-0 max-w-3xl">
-          {/* Header */}
-          <motion.header
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-8"
-          >
-            <div className="flex items-center gap-3 mb-4 flex-wrap">
-              <span className="px-2.5 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-neon-cyan/10 text-neon-cyan border border-neon-cyan/20">
+          {/* Header — immediately above the fold */}
+          <header className="mb-6">
+            {/* Meta line — compact */}
+            <div className="flex items-center gap-2 mb-3 flex-wrap text-xs" style={{ color: "var(--text-muted)" }}>
+              <span
+                className="px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider"
+                style={{ background: "var(--accent-muted)", color: "var(--accent)" }}
+              >
                 {lang === "en" ? "Deep Dive" : "गहन विश्लेषण"}
               </span>
-              <span className="text-xs text-text-muted">{post.sourceName}</span>
-              <span className="text-xs text-text-muted">•</span>
-              <span className="text-xs text-text-muted">
+              <span>{post.sourceName}</span>
+              <span>·</span>
+              <span>
                 {new Date(post.publishedAt).toLocaleDateString(
                   lang === "hi" ? "hi-IN" : "en-IN",
                   { year: "numeric", month: "short", day: "numeric" }
                 )}
               </span>
-              <span className="text-xs text-text-muted">•</span>
-              <span className="text-xs text-text-muted">{post.authorName || "Manjeet Singh"}</span>
             </div>
 
+            {/* Title — large, immediate */}
             <h1
-              className="text-2xl sm:text-3xl lg:text-4xl font-bold text-text-primary leading-tight mb-2"
-              style={{ fontFamily: "var(--font-noto-sans-devanagari), var(--font-space-grotesk), system-ui" }}
+              className="text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight mb-2"
+              style={{
+                fontFamily: lang === "hi"
+                  ? "var(--font-noto-sans-devanagari), system-ui"
+                  : "var(--font-playfair), Georgia, serif",
+                color: "var(--text-primary)",
+              }}
             >
               {primaryTitle}
             </h1>
 
-            <p className="text-lg text-text-muted" style={{ fontFamily: "var(--font-space-grotesk)" }}>
+            <p className="text-base" style={{ color: "var(--text-muted)", fontFamily: "var(--font-playfair), Georgia, serif" }}>
               {secondaryTitle}
             </p>
 
             {/* Meta description as subtitle */}
             {(lang === "en" ? post.metaDescriptionEn : post.metaDescriptionHi) && (
               <p
-                className="mt-3 text-sm text-text-secondary leading-relaxed"
+                className="mt-2 text-sm leading-relaxed"
                 style={{
                   fontFamily: lang === "hi"
                     ? "var(--font-noto-sans-devanagari), system-ui"
                     : "var(--font-inter), system-ui",
+                  color: "var(--text-secondary)",
                 }}
               >
                 {lang === "en" ? post.metaDescriptionEn : post.metaDescriptionHi}
               </p>
             )}
-          </motion.header>
+          </header>
 
-          {/* Tags */}
+          {/* Tags — compact */}
           <Tags tags={post.tags} />
 
-          {/* Hero image */}
+          {/* Hero image — reduced height on mobile */}
           {imageUrl && (
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.15 }}
-              className="relative rounded-2xl overflow-hidden mb-10 border border-white/[0.06]"
-            >
+            <div className="relative rounded-xl overflow-hidden mb-8" style={{ border: "1px solid var(--glass-border)" }}>
               <img
                 src={imageUrl}
                 alt={post.titleEnglish}
-                className="w-full h-56 sm:h-72 lg:h-80 object-cover"
+                className="w-full h-44 sm:h-64 lg:h-72 object-cover max-w-full"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-            </motion.div>
+            </div>
           )}
 
           {/* Ad slot after hero */}
           <AdSlot />
 
-          {/* Sectioned content (new format) */}
+          {/* Sectioned content */}
           {hasSections ? (
             <div className="space-y-8">
               {post.sections!.map((section, i) => (
                 <div key={section._key || i}>
                   <ArticleSection section={section} index={i} lang={lang} />
-                  {/* Ad slot every 2 sections */}
                   {i % 2 === 1 && i < post.sections!.length - 1 && <AdSlot />}
                 </div>
               ))}
             </div>
           ) : (
-            /* Fallback: flat content (old posts) */
             <GlassPanel
               intensity="light"
               className="p-6 sm:p-8 mb-8"
@@ -560,11 +558,12 @@ function DeepDiveArticle({
               transition={{ delay: 0.25 }}
             >
               <div
-                className="prose prose-invert prose-lg max-w-none prose-headings:font-bold prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4 prose-h2:text-text-primary prose-p:text-text-secondary prose-p:leading-relaxed prose-strong:text-text-primary"
+                className="prose prose-invert prose-lg max-w-none prose-headings:font-bold prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4 prose-p:leading-relaxed"
                 style={{
                   fontFamily: lang === "hi"
                     ? "var(--font-noto-sans-devanagari), var(--font-inter), system-ui"
                     : "var(--font-inter), system-ui",
+                  color: "var(--text-secondary)",
                 }}
               >
                 {((lang === "en" && post.contentEnglish) ? post.contentEnglish : post.content)
@@ -604,16 +603,17 @@ function DeepDiveArticle({
               viewport={{ once: true }}
               className="my-10 relative rounded-2xl p-6 sm:p-8 overflow-hidden text-center"
               style={{
-                background: "linear-gradient(135deg, rgba(139,92,246,0.08), rgba(6,182,212,0.08))",
-                border: "1px solid rgba(139,92,246,0.15)",
+                background: "var(--accent-muted)",
+                border: "1px solid var(--accent-muted)",
               }}
             >
               <p
-                className="text-sm sm:text-base text-text-secondary leading-relaxed italic"
+                className="text-sm sm:text-base leading-relaxed italic"
                 style={{
                   fontFamily: lang === "hi"
                     ? "var(--font-noto-sans-devanagari), var(--font-inter), system-ui"
                     : "var(--font-inter), system-ui",
+                  color: "var(--text-secondary)",
                 }}
               >
                 &ldquo;{(lang === "en" && post.conclusionEnglish) ? post.conclusionEnglish : post.conclusion}&rdquo;
@@ -629,14 +629,15 @@ function DeepDiveArticle({
 
           {/* Source link */}
           {post.sourceUrl && (
-            <div className="mt-8 pt-6 border-t border-white/[0.06]">
-              <p className="text-xs text-text-muted">
+            <div className="mt-8 pt-6" style={{ borderTop: "1px solid var(--glass-border)" }}>
+              <p className="text-xs" style={{ color: "var(--text-muted)" }}>
                 {lang === "en" ? "Original source:" : "मूल स्रोत:"}{" "}
                 <a
                   href={post.sourceUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-neon-violet hover:underline"
+                  style={{ color: "var(--accent)" }}
+                  className="hover:underline"
                 >
                   {post.sourceName}
                 </a>
@@ -647,7 +648,7 @@ function DeepDiveArticle({
 
         {/* Sidebar — desktop only */}
         <aside className="hidden lg:block w-72 xl:w-80 shrink-0">
-          <div className="sticky top-24 space-y-6">
+          <div className="sticky top-20 space-y-6">
             {/* Table of Contents */}
             {hasSections && (
               <TableOfContents sections={post.sections} lang={lang} />
@@ -656,14 +657,14 @@ function DeepDiveArticle({
             {/* Quick facts sidebar card */}
             {post.infographicFacts && post.infographicFacts.length > 0 && (
               <div
-                className="p-5 rounded-2xl backdrop-blur-xl"
+                className="p-5 rounded-2xl"
                 style={{
-                  background: "rgba(17,17,40,0.5)",
-                  border: "1px solid rgba(255,255,255,0.07)",
+                  background: "var(--glass-bg)",
+                  border: "1px solid var(--glass-border)",
                 }}
               >
-                <h3 className="text-sm font-semibold text-text-primary mb-4 flex items-center gap-2">
-                  <span className="text-neon-green">&#x2726;</span>
+                <h3 className="text-sm font-semibold mb-4 flex items-center gap-2" style={{ color: "var(--text-primary)" }}>
+                  <span style={{ color: "#10b981" }}>&#x2726;</span>
                   {lang === "en" ? "Quick Facts" : "त्वरित तथ्य"}
                 </h3>
                 <ul className="space-y-2">
@@ -671,7 +672,7 @@ function DeepDiveArticle({
                     ? post.infographicFactsEnglish
                     : post.infographicFacts
                   ).slice(0, 3).map((f, i) => (
-                    <li key={i} className="text-xs text-text-muted leading-relaxed">
+                    <li key={i} className="text-xs leading-relaxed" style={{ color: "var(--text-muted)" }}>
                       &bull; {f}
                     </li>
                   ))}
@@ -684,30 +685,30 @@ function DeepDiveArticle({
 
             {/* Tools promo */}
             <div
-              className="p-5 rounded-2xl backdrop-blur-xl"
+              className="p-5 rounded-2xl"
               style={{
-                background: "rgba(17,17,40,0.5)",
-                border: "1px solid rgba(255,255,255,0.07)",
+                background: "var(--glass-bg)",
+                border: "1px solid var(--glass-border)",
               }}
             >
-              <h3 className="text-sm font-semibold text-text-primary mb-4 flex items-center gap-2">
-                <svg className="w-4 h-4 text-neon-cyan" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <h3 className="text-sm font-semibold mb-4 flex items-center gap-2" style={{ color: "var(--text-primary)" }}>
+                <svg className="w-4 h-4" style={{ color: "var(--accent)" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17l-5.66-5.66a8 8 0 1111.32 0l-5.66 5.66z" />
                 </svg>
                 {lang === "en" ? "Explore Tools" : "टूल्स एक्सप्लोर करें"}
               </h3>
               <div className="space-y-2">
                 {[
-                  { name: lang === "en" ? "ISS Tracker" : "ISS ट्रैकर", href: "/tools/iss-tracker", icon: "satellite" },
-                  { name: lang === "en" ? "Orbit Simulator" : "कक्षा सिम्युलेटर", href: "/tools/orbit-simulator", icon: "orbit" },
-                  { name: lang === "en" ? "Universe Explorer" : "ब्रह्मांड एक्सप्लोरर", href: "/universe", icon: "galaxy" },
+                  { name: lang === "en" ? "ISS Tracker" : "ISS ट्रैकर", href: "/tools/iss-tracker" },
+                  { name: lang === "en" ? "Orbit Simulator" : "कक्षा सिम्युलेटर", href: "/tools/orbit-simulator" },
+                  { name: lang === "en" ? "Universe Explorer" : "ब्रह्मांड एक्सप्लोरर", href: "/universe" },
                 ].map((tool) => (
                   <Link
                     key={tool.href}
                     href={tool.href}
-                    className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-white/[0.04] transition-colors group"
+                    className="flex items-center gap-3 p-2.5 rounded-xl transition-colors group"
                   >
-                    <span className="text-sm text-text-secondary group-hover:text-text-primary transition-colors">
+                    <span className="text-sm transition-colors" style={{ color: "var(--text-secondary)" }}>
                       {tool.name}
                     </span>
                   </Link>
@@ -759,13 +760,13 @@ export default function BlogArticlePage() {
     return (
       <>
         <Navbar />
-        <main className="min-h-screen bg-[#000000] pt-24 flex items-center justify-center">
+        <main className="min-h-screen pt-20 flex items-center justify-center" style={{ background: "var(--bg-primary)" }}>
           <div className="text-center">
-            <p className="text-6xl font-bold text-text-muted mb-4">404</p>
-            <p className="text-text-secondary">
+            <p className="text-6xl font-bold mb-4" style={{ color: "var(--text-muted)" }}>404</p>
+            <p style={{ color: "var(--text-secondary)" }}>
               {lang === "en" ? "Article not found." : "लेख नहीं मिला।"}
             </p>
-            <Link href="/blog" className="inline-block mt-6 text-sm text-neon-violet hover:underline">
+            <Link href="/blog" className="inline-block mt-6 text-sm hover:underline" style={{ color: "var(--accent)" }}>
               {lang === "en" ? "\u2190 Back to Blog" : "\u2190 ब्लॉग पर वापस"}
             </Link>
           </div>
@@ -778,10 +779,13 @@ export default function BlogArticlePage() {
     return (
       <>
         <Navbar />
-        <main className="min-h-screen bg-[#000000] pt-24 flex items-center justify-center">
+        <main className="min-h-screen pt-20 flex items-center justify-center" style={{ background: "var(--bg-primary)" }}>
           <div className="flex flex-col items-center gap-4">
-            <div className="w-8 h-8 border-2 border-neon-violet/30 border-t-neon-violet rounded-full animate-spin" />
-            <p className="text-sm text-text-muted">
+            <div
+              className="w-8 h-8 rounded-full animate-spin"
+              style={{ border: "2px solid var(--accent-muted)", borderTopColor: "var(--accent)" }}
+            />
+            <p className="text-sm" style={{ color: "var(--text-muted)" }}>
               {lang === "en" ? "Loading article..." : "लेख लोड हो रहा है..."}
             </p>
           </div>
@@ -794,7 +798,7 @@ export default function BlogArticlePage() {
     <>
       <ReadingProgressBar />
       <Navbar />
-      <main className="min-h-screen bg-[#000000] pt-20">
+      <main className="min-h-screen pt-16" style={{ background: "var(--bg-primary)" }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {post && <DeepDiveArticle post={post} lang={lang} />}
         </div>
