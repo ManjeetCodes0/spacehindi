@@ -32,7 +32,9 @@ export default function PlanetPage() {
   const next = idx < sorted.length - 1 ? sorted[idx + 1] : null;
 
   // Use PNG images for the supported planets
-  const planetsWithImages = new Set(["mercury", "venus", "earth", "mars", "jupiter", "saturn"]);
+  const planetsWithImages = new Set([
+    "mercury", "venus", "earth", "mars", "jupiter", "saturn", "uranus", "neptune", "moon", "pluto"
+  ]);
   const hasPlanetImage = planetsWithImages.has(id);
 
   /* Nav button shared style */
@@ -149,7 +151,7 @@ export default function PlanetPage() {
                     {hasPlanetImage ? (
                       <div className="relative w-full h-full flex items-center justify-center">
                         <Image
-                          src={`/universe/planets/${id}/${id}1.png`}
+                          src={id === "moon" ? "/universe/moons/earth/Moon-earth.png" : `/universe/planets/${id}/${id}1.png`}
                           alt={body.name[lang]}
                           fill
                           priority

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { celestialBodies } from "@/data/universe/planets";
 
@@ -14,6 +15,9 @@ export default function CelestialSelector({
   activeId,
 }: CelestialSelectorProps) {
   const sorted = [...celestialBodies].sort((a, b) => a.order - b.order);
+  const planetsWithImages = new Set([
+    "mercury", "venus", "earth", "mars", "jupiter", "saturn", "uranus", "neptune", "moon", "pluto"
+  ]);
 
   return (
     <nav className="flex items-center gap-1.5 overflow-x-auto pb-2 scrollbar-hide">
@@ -34,16 +38,26 @@ export default function CelestialSelector({
                 }
               `}
             >
-              {/* Tiny planet dot */}
-              <div
-                className="w-3 h-3 rounded-full flex-shrink-0"
-                style={{
-                  background: body.gradient,
-                  boxShadow: isActive
-                    ? `0 0 8px ${body.color}60`
-                    : "none",
-                }}
-              />
+              {/* Tiny planet icon */}
+              {planetsWithImages.has(body.id) ? (
+                <div className="relative w-4 h-4 flex-shrink-0 flex items-center justify-center">
+                  <Image
+                    src={body.id === "moon" ? "/universe/moons/earth/Moon-earth.png" : `/universe/planets/${body.id}/${body.id}1.png`}
+                    alt={body.name[lang]}
+                    fill
+                    unoptimized
+                    style={{ objectFit: "contain", filter: isActive ? `drop-shadow(0 0 4px ${body.color})` : "none" }}
+                  />
+                </div>
+              ) : (
+                <div
+                  className="w-3 h-3 rounded-full flex-shrink-0"
+                  style={{
+                    background: body.gradient,
+                    boxShadow: isActive ? `0 0 8px ${body.color}60` : "none",
+                  }}
+                />
+              )}
               <span
                 className={`text-xs font-medium ${
                   isActive ? "text-text-primary" : "text-text-muted"

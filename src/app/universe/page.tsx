@@ -11,7 +11,9 @@ import { useLang } from "@/context/LanguageContext";
 export default function UniverseHub() {
   const { lang } = useLang();
   const sorted = [...celestialBodies].sort((a, b) => a.order - b.order);
-  const planetsWithImages = new Set(["mercury", "venus", "earth", "mars", "jupiter", "saturn"]);
+  const planetsWithImages = new Set([
+    "mercury", "venus", "earth", "mars", "jupiter", "saturn", "uranus", "neptune", "moon", "pluto"
+  ]);
 
   return (
     <>
@@ -118,7 +120,7 @@ export default function UniverseHub() {
                         <div className="relative w-40 h-40 sm:w-56 sm:h-56 group-hover:scale-105 transition-transform duration-700 ease-out z-10">
                           {hasImage ? (
                             <Image
-                              src={`/universe/planets/${body.id}/${body.id}1.png`}
+                              src={body.id === "moon" ? "/universe/moons/earth/Moon-earth.png" : `/universe/planets/${body.id}/${body.id}1.png`}
                               alt={body.name[lang]}
                               fill
                               priority

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import { planets } from "@/data/planets";
 
 interface PlanetGalleryProps {
@@ -109,6 +110,16 @@ const planetFacts: Record<
     dayLength: "27.3 Earth days",
     type: { en: "Satellite", hi: "उपग्रह" },
   },
+  pluto: {
+    fact: {
+      en: "A complex dwarf planet in the Kuiper Belt with mountains of water ice and a heart-shaped glacier.",
+      hi: "कुइपर बेल्ट में एक जटिल बौना ग्रह जिसमें पानी की बर्फ के पहाड़ और दिल के आकार का ग्लेशियर है।",
+    },
+    diameter: "2,376 km",
+    moons: "5",
+    dayLength: "153 hours",
+    type: { en: "Dwarf Planet", hi: "बौना ग्रह" },
+  },
 };
 
 const sizeMap = {
@@ -148,6 +159,11 @@ export default function PlanetGallery({ lang }: PlanetGalleryProps) {
 
   const selectedPlanet = planets.find((p) => p.id === selected)!;
   const facts = planetFacts[selected];
+  
+  const planetsWithImages = new Set([
+    "mercury", "venus", "earth", "mars", "jupiter", "saturn", "uranus", "neptune", "moon", "pluto"
+  ]);
+  const hasSelectedImage = planetsWithImages.has(selected);
 
   return (
     <section className="py-16 sm:py-24">
@@ -212,29 +228,43 @@ export default function PlanetGallery({ lang }: PlanetGalleryProps) {
               className="flex flex-col items-center gap-2 shrink-0 cursor-pointer group"
             >
               <div
-                className="rounded-full relative transition-all duration-300"
+                className="rounded-full relative transition-all duration-300 pointer-events-none flex items-center justify-center"
                 style={{
                   width: displaySize,
                   height: displaySize,
-                  background: planet.gradient,
-                  boxShadow: isSelected
-                    ? `0 0 40px ${planet.color}40, 0 0 80px ${planet.color}15`
-                    : `inset -4px -2px 8px rgba(0,0,0,0.4)`,
+                  background: planetsWithImages.has(planet.id) ? "transparent" : planet.gradient,
+                  boxShadow: planetsWithImages.has(planet.id)
+                    ? "none" 
+                    : isSelected
+                      ? `0 0 40px ${planet.color}40, 0 0 80px ${planet.color}15`
+                      : `inset -4px -2px 8px rgba(0,0,0,0.4)`,
                 }}
               >
-                {/* Light reflection */}
-                <div
-                  className="absolute top-[15%] left-[20%] w-[30%] h-[25%] rounded-full"
-                  style={{
-                    background: "radial-gradient(ellipse, rgba(255,255,255,0.2) 0%, transparent 70%)",
-                    filter: "blur(2px)",
-                  }}
-                />
-                {planet.ring && (
-                  <div
-                    className="absolute inset-[-30%] rounded-full border border-white/10 pointer-events-none"
-                    style={{ transform: "rotateX(75deg)" }}
+                {planetsWithImages.has(planet.id) ? (
+                  <Image
+                    src={planet.id === "moon" ? "/universe/moons/earth/Moon-earth.png" : `/universe/planets/${planet.id}/${planet.id}1.png`}
+                    alt={planet.name[lang]}
+                    fill
+                    unoptimized
+                    style={{ objectFit: "contain", filter: isSelected ? `drop-shadow(0 0 20px ${planet.color}80)` : 'none' }}
                   />
+                ) : (
+                  <>
+                    {/* Light reflection */}
+                    <div
+                      className="absolute top-[15%] left-[20%] w-[30%] h-[25%] rounded-full"
+                      style={{
+                        background: "radial-gradient(ellipse, rgba(255,255,255,0.2) 0%, transparent 70%)",
+                        filter: "blur(2px)",
+                      }}
+                    />
+                    {planet.ring && (
+                      <div
+                        className="absolute inset-[-30%] rounded-full border border-white/10 pointer-events-none"
+                        style={{ transform: "rotateX(75deg)" }}
+                      />
+                    )}
+                  </>
                 )}
               </div>
               <span
@@ -269,28 +299,41 @@ export default function PlanetGallery({ lang }: PlanetGalleryProps) {
             {/* Large planet sphere */}
             <div className="shrink-0 relative">
               <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-                className="rounded-full"
+                animate={hasSelectedImage ? { y: [0, -8, 0] } : { rotate: 360 }}
+                transition={hasSelectedImage ? { duration: 6, repeat: Infinity, ease: "easeInOut" } : { duration: 60, repeat: Infinity, ease: "linear" }}
+                className="relative flex items-center justify-center rounded-full"
                 style={{
                   width: 140,
                   height: 140,
-                  background: selectedPlanet.gradient,
-                  boxShadow: `inset -6px -3px 12px rgba(0,0,0,0.5), 0 0 50px ${selectedPlanet.color}25`,
+                  background: hasSelectedImage ? "transparent" : selectedPlanet.gradient,
+                  boxShadow: hasSelectedImage ? "none" : `inset -6px -3px 12px rgba(0,0,0,0.5), 0 0 50px ${selectedPlanet.color}25`,
                 }}
               >
-                <div
-                  className="absolute top-[12%] left-[18%] w-[35%] h-[28%] rounded-full"
-                  style={{
-                    background: "radial-gradient(ellipse, rgba(255,255,255,0.2) 0%, transparent 70%)",
-                    filter: "blur(3px)",
-                  }}
-                />
-                {selectedPlanet.ring && (
-                  <div
-                    className="absolute inset-[-30%] rounded-full border-2 border-white/10 pointer-events-none"
-                    style={{ transform: "rotateX(75deg)" }}
+                {hasSelectedImage ? (
+                  <Image
+                    src={selected === "moon" ? "/universe/moons/earth/Moon-earth.png" : `/universe/planets/${selected}/${selected}1.png`}
+                    alt={selectedPlanet.name[lang]}
+                    fill
+                    unoptimized
+                    style={{ objectFit: "contain", filter: `drop-shadow(0 15px 30px ${selectedPlanet.color}80)` }}
+                    className="pointer-events-none z-10"
                   />
+                ) : (
+                  <>
+                    <div
+                      className="absolute top-[12%] left-[18%] w-[35%] h-[28%] rounded-full"
+                      style={{
+                        background: "radial-gradient(ellipse, rgba(255,255,255,0.2) 0%, transparent 70%)",
+                        filter: "blur(3px)",
+                      }}
+                    />
+                    {selectedPlanet.ring && (
+                      <div
+                        className="absolute inset-[-30%] rounded-full border-2 border-white/10 pointer-events-none"
+                        style={{ transform: "rotateX(75deg)" }}
+                      />
+                    )}
+                  </>
                 )}
               </motion.div>
               {/* Ambient glow */}

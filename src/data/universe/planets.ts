@@ -264,6 +264,33 @@ export const celestialBodies: CelestialBody[] = [
       atmosphere: { en: "80% H₂, 19% He, 1.5% CH₄ — supersonic winds", hi: "80% H₂, 19% He, 1.5% CH₄ — सुपरसोनिक हवाएँ" },
     },
   },
+  {
+    id: "pluto",
+    order: 9,
+    name: { en: "Pluto", hi: "प्लूटो" },
+    type: { en: "Dwarf Planet", hi: "बौना ग्रह" },
+    tagline: {
+      en: "The Heart of the Kuiper Belt",
+      hi: "कुइपर बेल्ट का हृदय",
+    },
+    description: {
+      en: "Pluto is the most famous dwarf planet in our solar system. Discovered in 1930, it was considered the 9th planet until 2006. It features a stunning heart-shaped glacier called Tombaugh Regio and majestic mountains made of solid water ice. Pluto's highly elliptical orbit sometimes brings it closer to the Sun than Neptune. It has five known moons, the largest being Charon, so big they orbit a common center of mass.",
+      hi: "प्लूटो हमारे सौरमंडल का सबसे प्रसिद्ध बौना ग्रह है। 1930 में खोजा गया, इसे 2006 तक 9वाँ ग्रह माना जाता था। इसमें टॉम्बो रेजीओ नामक दिल के आकार का ग्लेशियर और ठोस पानी की बर्फ से बने राजसी पहाड़ हैं। प्लूटो की कक्षा अत्यधिक अण्डाकार है, जो कभी-कभी इसे वरुण की तुलना में सूर्य के करीब लाती है। इसके पाँच ज्ञात चंद्रमा हैं, जिनमें सबसे बड़ा चारोन है।",
+    },
+    color: "#e2e8f0",
+    gradient: "radial-gradient(circle at 35% 30%, #f1f5f9 0%, #cbd5e1 40%, #94a3b8 80%)",
+    videoId: "5Hq4G50EO2k",
+    stats: {
+      mass: { value: "1.30 × 10²²", unit: "kg" },
+      diameter: { value: "2,376", unit: "km" },
+      gravity: { value: "0.62", unit: "m/s²" },
+      temperature: { value: "-225", unit: "°C avg" },
+      dayLength: { value: "153", unit: "hours" },
+      yearLength: { value: "248", unit: "Earth years" },
+      distanceFromSun: { value: "5,906", unit: "M km" },
+      atmosphere: { en: "Thin N₂, CH₄, CO — expands when close to Sun", hi: "पतला N₂, CH₄, CO — सूर्य के करीब होने पर फैलता है" },
+    },
+  },
 ];
 
 export function getCelestialBody(id: string): CelestialBody | undefined {

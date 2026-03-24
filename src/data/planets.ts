@@ -76,6 +76,14 @@ export const planets: Planet[] = [
     size: "md",
   },
   {
+    id: "pluto",
+    name: { en: "Pluto", hi: "प्लूटो" },
+    gravity: 0.063,
+    color: "#e2e8f0",
+    gradient: "radial-gradient(circle at 35% 30%, #f1f5f9 0%, #cbd5e1 40%, #94a3b8 80%)",
+    size: "sm",
+  },
+  {
     id: "moon",
     name: { en: "Moon", hi: "चंद्रमा" },
     gravity: 0.166,
