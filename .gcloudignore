@@ -1,0 +1,15 @@
+# GCP Cloud Build ignore file
+# This overrides .gitignore for gcloud deployments
+
+node_modules
+.next
+.git
+.env
+.env.local
+.env.development
+gcp-key.json
+*.pem
+*.key
+.claude
+.vscode
+deploy-prod.ps1
