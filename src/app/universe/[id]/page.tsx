@@ -81,8 +81,8 @@ export default function PlanetPage() {
             >
               {/* TITLE */}
               <motion.div
-                className="absolute inset-0 flex flex-col items-center pointer-events-none"
-                style={{ zIndex: 30, justifyContent: "flex-start", paddingTop: "clamp(4rem, 12vh, 15vh)" }}
+                className="absolute inset-x-0 top-0 flex flex-col items-center pointer-events-none pt-[22vh] sm:pt-[18vh] md:pt-[15vh] lg:pt-[10vh]"
+                style={{ zIndex: 30, justifyContent: "flex-start" }}
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, delay: 0.2 }}
@@ -103,10 +103,9 @@ export default function PlanetPage() {
                 </h1>
               </motion.div>
 
-              {/* PLANET — positioned absolutely from the bottom to prevent swallowing the text */}
+              {/* PLANET — positioned absolutely from the bottom */}
               <motion.div
-                className="absolute z-10 w-full flex items-center justify-center pointer-events-none"
-                style={{ bottom: "0" }}
+                className="absolute z-10 w-full flex items-center justify-center pointer-events-none bottom-[8vh] sm:bottom-[5vh] lg:bottom-0"
                 initial={{ opacity: 0, scale: 0.85 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
@@ -135,13 +134,13 @@ export default function PlanetPage() {
                     }}
                   />
 
-                  {/* Planet size: anchored to bottom, pushing its top edge to intersect perfectly with the Title */}
+                  {/* Planet size: dynamic limits */}
                   <motion.div
                     style={{
                       width: "min(100vw, 85vh)",
                       height: "min(100vw, 85vh)",
-                      maxWidth: "1200px",
-                      maxHeight: "1200px",
+                      maxWidth: "1400px",
+                      maxHeight: "1400px",
                       zIndex: 1,
                       marginBottom: "clamp(-10vh, -5vh, -20px)", // Sink the planet slightly behind bottom nav
                     }}
