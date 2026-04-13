@@ -76,6 +76,8 @@ export default function OrbitSimulator({ lang }: OrbitSimulatorProps) {
   const [viewMode, setViewMode] = useState<ViewMode>("inner");
   const [time, setTime] = useState(0);
   const [selectedPlanet, setSelectedPlanet] = useState<string | null>(null);
+  const [showOrbits, setShowOrbits] = useState(true);
+  const [scaleMode, setScaleMode] = useState<"spaced" | "realistic">("spaced");
   const rafRef = useRef<number>(0);
   const lastTimeRef = useRef<number>(0);
   const t = text[lang];
@@ -106,16 +108,22 @@ export default function OrbitSimulator({ lang }: OrbitSimulatorProps) {
     return true;
   });
 
+  // Beautiful non-linear scaling so inner planets aren't utterly squashed
+  // We use an exponential squash. 
   const maxAU =
     viewMode === "inner"
-      ? 2.0
+      ? 1.8 // Mars is 1.524 
       : viewMode === "outer"
         ? 32
         : 32;
 
-  const canvasSize = 400;
+  // Squish the scale logarithmically/exponentially to spread out inner planets, or use linear for pure simulation
+  const powerSquash = scaleMode === "spaced" ? (viewMode === "inner" ? 0.7 : 0.45) : 1;
+  const maxVisualRadius = Math.pow(maxAU, powerSquash);
+
+  const canvasSize = 800;
   const center = canvasSize / 2;
-  const scale = (center - 30) / maxAU;
+  const scale = (center - 60) / maxVisualRadius;
 
   const selectedData = selectedPlanet
     ? {
@@ -125,67 +133,58 @@ export default function OrbitSimulator({ lang }: OrbitSimulatorProps) {
     : null;
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="text-center max-w-2xl mx-auto">
-        <motion.h2
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-3xl sm:text-4xl font-bold text-text-primary mb-3"
-          style={{ fontFamily: "var(--font-space-grotesk)" }}
-        >
-          {t.title}
-        </motion.h2>
-        <motion.p
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="text-text-secondary"
-        >
-          {t.subtitle}
-        </motion.p>
-      </div>
-
-      {/* Controls */}
+    <div className="space-y-8 pb-10">
+      {/* Controls Hub */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
-        className="max-w-lg mx-auto flex flex-wrap items-center justify-center gap-3"
+        className="max-w-3xl mx-auto flex flex-wrap items-center justify-between gap-6 p-4 rounded-3xl bg-[rgba(10,10,25,0.7)] backdrop-blur-2xl border border-[rgba(255,255,255,0.05)] shadow-[0_0_40px_rgba(0,0,0,0.5)]"
       >
-        {/* View mode toggle */}
-        <div className="flex rounded-lg border border-white/[0.06] overflow-hidden">
-          {(["inner", "outer", "all"] as ViewMode[]).map((mode) => (
-            <button
-              key={mode}
-              onClick={() => setViewMode(mode)}
-              className={`px-4 py-2 text-sm font-medium transition-all duration-200 ${
-                viewMode === mode
-                  ? "bg-white/[0.08] text-text-primary"
-                  : "text-text-muted hover:bg-white/[0.04] hover:text-text-secondary"
-              }`}
-            >
-              {mode === "inner"
-                ? t.innerPlanets
-                : mode === "outer"
-                  ? t.outerPlanets
-                  : t.allPlanets}
-            </button>
-          ))}
+        {/* Scale & Orbits Toggles */}
+        <div className="flex flex-col gap-2">
+          <div className="flex rounded-xl bg-black/40 border border-white/5 p-1 overflow-hidden">
+            {(["inner", "outer", "all"] as ViewMode[]).map((mode) => (
+              <button
+                key={mode}
+                onClick={() => setViewMode(mode)}
+                className={`px-4 py-1.5 text-[10px] uppercase tracking-widest font-bold rounded-lg transition-all duration-300 ${
+                  viewMode === mode
+                    ? "bg-white/10 text-white shadow-sm"
+                    : "text-white/40 hover:text-white/80"
+                }`}
+              >
+                {mode === "inner" ? t.innerPlanets : mode === "outer" ? t.outerPlanets : t.allPlanets}
+              </button>
+            ))}
+          </div>
+          <div className="flex rounded-xl bg-black/40 border border-white/5 p-1 overflow-hidden">
+             <button
+               onClick={() => setScaleMode("spaced")}
+               className={`flex-1 px-2 py-1.5 text-[9px] uppercase tracking-widest font-bold rounded-lg transition-all duration-300 ${scaleMode === "spaced" ? "bg-accent/20 text-accent" : "text-white/40 hover:text-white/80"}`}
+             >
+               Educational View
+             </button>
+             <button
+               onClick={() => setScaleMode("realistic")}
+               className={`flex-1 px-2 py-1.5 text-[9px] uppercase tracking-widest font-bold rounded-lg transition-all duration-300 ${scaleMode === "realistic" ? "bg-accent/20 text-accent" : "text-white/40 hover:text-white/80"}`}
+             >
+               Realistic Scale
+             </button>
+          </div>
         </div>
 
         {/* Speed control */}
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-text-muted">{t.speed}:</span>
-          {[0.5, 1, 2, 5].map((s) => (
+        <div className="flex items-center gap-2 bg-black/40 border border-white/5 rounded-xl p-1">
+          <span className="text-[10px] text-white/40 uppercase tracking-widest px-2 font-bold">{t.speed}</span>
+          {[0.1, 0.25, 0.5, 1, 2].map((s) => (
             <button
               key={s}
-              onClick={() => setSpeed(s)}
-              className={`px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 border ${
-                speed === s
-                  ? "border-neon-cyan/30 bg-neon-cyan/10 text-neon-cyan"
-                  : "border-white/[0.06] text-text-muted hover:bg-white/[0.04]"
+              onClick={() => { setSpeed(s); setPaused(false); }}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-300 ${
+                speed === s && !paused
+                  ? "bg-accent/20 text-accent"
+                  : "text-white/40 hover:bg-white/5 hover:text-white"
               }`}
             >
               {s}x
@@ -193,11 +192,39 @@ export default function OrbitSimulator({ lang }: OrbitSimulatorProps) {
           ))}
         </div>
 
+        {/* Manual Time Slider & Orbit Toggle */}
+        <div className="flex flex-col gap-2 px-2 lg:w-48 w-full">
+           <div className="flex justify-between text-[10px] text-white/50 uppercase tracking-widest font-bold">
+             <span>Time Machine</span>
+             <span className="text-accent">
+               {new Date(2024, 0, 1 + time * 365.25).toLocaleDateString(lang === "en" ? "en-US" : "hi-IN", { year: "numeric", month: "short", day: "numeric" })}
+             </span>
+           </div>
+           <input 
+             type="range"
+             min="0"
+             max="500"
+             step="0.05"
+             value={time}
+             onChange={(e) => {
+               setTime(parseFloat(e.target.value));
+               setPaused(true);
+             }}
+             className="w-full accent-accent bg-white/10 h-1.5 rounded-full appearance-none outline-none cursor-pointer mb-2"
+           />
+           <button
+             onClick={() => setShowOrbits(!showOrbits)}
+             className="text-[10px] uppercase tracking-widest font-bold text-white/40 hover:text-white border border-white/10 rounded-lg py-1 transition-all"
+           >
+             {showOrbits ? "Hide Orbit Lines" : "Show Orbit Lines"}
+           </button>
+        </div>
+
         {/* Play/Pause & Reset */}
         <div className="flex gap-2">
           <button
             onClick={() => setPaused(!paused)}
-            className="px-4 py-2 rounded-lg text-sm font-medium border border-white/[0.06] text-text-secondary hover:bg-white/[0.04] transition-all"
+            className="px-6 py-2 rounded-xl text-xs font-bold uppercase tracking-widest border border-white/10 bg-white/5 text-white hover:bg-white/10 transition-all shadow-sm"
           >
             {paused ? t.play : t.pause}
           </button>
@@ -206,7 +233,7 @@ export default function OrbitSimulator({ lang }: OrbitSimulatorProps) {
               setTime(0);
               lastTimeRef.current = 0;
             }}
-            className="px-4 py-2 rounded-lg text-sm font-medium border border-white/[0.06] text-text-muted hover:bg-white/[0.04] transition-all"
+            className="px-6 py-2 rounded-xl text-xs font-bold uppercase tracking-widest border border-white border-transparent text-white/50 hover:bg-white/5 transition-all"
           >
             {t.reset}
           </button>
@@ -219,57 +246,80 @@ export default function OrbitSimulator({ lang }: OrbitSimulatorProps) {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.6, delay: 0.3 }}
         className="
-          max-w-[500px] mx-auto p-4 rounded-2xl
-          bg-[rgba(17,17,40,0.5)] backdrop-blur-sm
-          border border-white/[0.06]
+          w-full max-w-[900px] mx-auto p-4 sm:p-6 rounded-[2.5rem]
+          bg-[rgba(5,5,15,0.7)] backdrop-blur-2xl
+          border border-[rgba(255,255,255,0.06)]
+          shadow-[0_20px_60px_rgba(0,0,0,0.8)] overflow-hidden relative
         "
       >
         <svg
           viewBox={`0 0 ${canvasSize} ${canvasSize}`}
-          className="w-full h-auto"
-          style={{ maxHeight: "500px" }}
+          className="w-full h-auto drop-shadow-2xl"
+          style={{ maxHeight: "800px" }}
         >
-          {/* Background stars */}
-          {Array.from({ length: 40 }, (_, i) => (
+          <defs>
+             <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stopColor="#fffbeb" stopOpacity="1" />
+                <stop offset="30%" stopColor="#f59e0b" stopOpacity="0.8" />
+                <stop offset="100%" stopColor="#d97706" stopOpacity="0" />
+             </radialGradient>
+             <filter id="starGlow">
+               <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
+               <feMerge>
+                 <feMergeNode in="coloredBlur"/>
+                 <feMergeNode in="SourceGraphic"/>
+               </feMerge>
+             </filter>
+          </defs>
+
+          {/* Deep Space Background stars */}
+          {Array.from({ length: 150 }, (_, i) => (
             <circle
               key={`star-${i}`}
-              cx={((i * 97 + 23) % canvasSize)}
-              cy={((i * 53 + 71) % canvasSize)}
-              r={i % 3 === 0 ? 1 : 0.5}
+              cx={((i * 137 + 53) % canvasSize)}
+              cy={((i * 97 + 71) % canvasSize)}
+              r={i % 6 === 0 ? 1.5 : (i % 3 === 0 ? 1.0 : 0.6)}
               fill="white"
-              opacity={0.2 + (i % 5) * 0.1}
+              opacity={i % 4 === 0 ? 0.8 : 0.2}
+              filter={i % 6 === 0 ? "url(#starGlow)" : "none"}
             />
           ))}
 
           {/* Sun */}
-          <circle cx={center} cy={center} r={viewMode === "inner" ? 10 : 6} fill="#fbbf24" />
+          <circle cx={center} cy={center} r={viewMode === "inner" ? 45 : 25} fill="url(#sunGlow)" />
           <circle
             cx={center}
             cy={center}
-            r={viewMode === "inner" ? 16 : 10}
-            fill="none"
-            stroke="#fbbf24"
-            strokeWidth={0.5}
-            opacity={0.2}
+            r={viewMode === "inner" ? 22 : 12}
+            fill="#fbbf24"
+            opacity={0.9}
+            filter="drop-shadow(0 0 10px #fbbf24)"
           />
 
           {/* Orbit paths and planets */}
           {visiblePlanets.map((planet) => {
             const data = orbitalData[planet.id];
-            const orbitRadius = data.semiMajorAU * scale;
+            
+            // Apply squash power to visual radius computation
+            const visualAU = Math.pow(data.semiMajorAU, powerSquash);
+            const orbitRadius = visualAU * scale;
+            
             // Angular position based on time and orbital period
             const angle = (time * 2 * Math.PI) / data.period;
-            // Simplified elliptical orbit
+
+            // Adding a slight isometric tilt (ry is 90% of rx) for depth
             const rx = orbitRadius;
-            const ry = orbitRadius * (1 - data.eccentricity * 0.5);
+            const ry = orbitRadius * 0.90;
             const px = center + rx * Math.cos(angle);
             const py = center + ry * Math.sin(angle);
+            
+            // Increased planet sizes for visibility
             const planetRadius =
-              planet.size === "lg" ? 6 : planet.size === "md" ? 4 : 3;
+              planet.size === "lg" ? 24 : planet.size === "md" ? 18 : 12;
             const isSelected = selectedPlanet === planet.id;
 
             return (
-              <g key={planet.id}>
+              <g key={planet.id} className="transition-all duration-300">
                 {/* Orbit ellipse */}
                 <ellipse
                   cx={center}
@@ -278,41 +328,39 @@ export default function OrbitSimulator({ lang }: OrbitSimulatorProps) {
                   ry={ry}
                   fill="none"
                   stroke={planet.color}
-                  strokeWidth={isSelected ? 1 : 0.5}
-                  opacity={isSelected ? 0.5 : 0.15}
-                  strokeDasharray={isSelected ? "none" : "4 4"}
+                  strokeWidth={isSelected ? 1.5 : 0.4}
+                  opacity={showOrbits ? (isSelected ? 0.7 : 0.2) : 0}
+                  strokeDasharray={isSelected ? "none" : "3 8"}
+                  style={{ filter: isSelected ? `drop-shadow(0 0 5px ${planet.color})` : "none", transition: "opacity 0.3s" }}
                 />
-                {/* Planet dot */}
-                <circle
-                  cx={px}
-                  cy={py}
-                  r={planetRadius}
-                  fill={planet.color}
-                  stroke={isSelected ? "white" : "none"}
-                  strokeWidth={isSelected ? 1.5 : 0}
+                
+                {/* Real Planet Image replacing the primitive dot */}
+                <g 
                   className="cursor-pointer"
-                  onClick={() =>
-                    setSelectedPlanet(
-                      selectedPlanet === planet.id ? null : planet.id
-                    )
-                  }
-                />
-                {/* Glow */}
-                <circle
-                  cx={px}
-                  cy={py}
-                  r={planetRadius + 4}
-                  fill={planet.color}
-                  opacity={0.1}
-                />
+                  onClick={() => setSelectedPlanet(selectedPlanet === planet.id ? null : planet.id)}
+                  style={{ transformOrigin: `${px}px ${py}px`, transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)' }}
+                  transform={isSelected ? "scale(1.3)" : "scale(1)"}
+                >
+                  <circle cx={px} cy={py} r={planetRadius} fill={planet.color} opacity={isSelected ? 0.4 : 0} filter="url(#starGlow)" />
+                  <image
+                    href={`/universe/planets/${planet.id}/${planet.id}1.png`}
+                    x={px - planetRadius}
+                    y={py - planetRadius}
+                    width={planetRadius * 2}
+                    height={planetRadius * 2}
+                    style={{ mixBlendMode: 'screen', filter: 'drop-shadow(0 0 3px rgba(255,255,255,0.2))' }}
+                  />
+                </g>
                 {/* Label */}
                 <text
                   x={px}
-                  y={py - planetRadius - 5}
+                  y={py - planetRadius - 6}
                   textAnchor="middle"
                   fill={planet.color}
-                  fontSize={viewMode === "all" ? 8 : 10}
-                  opacity={0.8}
+                  fontSize={viewMode === "all" ? 12 : 14}
+                  fontWeight="bold"
+                  opacity={0.9}
+                  style={{ filter: 'drop-shadow(0px 2px 2px rgba(0,0,0,0.8))' }}
                 >
                   {planet.name[lang]}
                 </text>

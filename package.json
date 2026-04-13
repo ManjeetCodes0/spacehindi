@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "sanity:dev": "sanity dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -26,6 +27,7 @@
     "react-dom": "19.2.3",
     "rss-parser": "^3.13.0",
     "sanity": "^5.17.1",
+    "styled-components": "^6.3.12",
     "three": "^0.183.2"
   },
   "devDependencies": {

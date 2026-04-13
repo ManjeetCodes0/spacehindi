@@ -51,12 +51,12 @@ function ToolCard({
       }
       className={`
         relative group h-full p-6 rounded-2xl overflow-hidden
-        bg-[rgba(17,17,40,0.55)] backdrop-blur-xl
-        border border-white/[0.07]
+        bg-space-elevated/70 backdrop-blur-xl
+        border border-space-border
         transition-all duration-300
         ${
           tool.available
-            ? "cursor-pointer hover:border-white/[0.15]"
+            ? "cursor-pointer hover:border-neon-violet/35"
             : "opacity-60 cursor-default"
         }
       `}
@@ -105,7 +105,7 @@ function ToolCard({
 
       {/* Name */}
       <h3
-        className="text-lg font-semibold text-text-primary mb-2 group-hover:text-white transition-colors"
+        className="text-lg font-semibold text-text-primary mb-2 group-hover:text-neon-violet transition-colors"
         style={{ fontFamily: "var(--font-space-grotesk)" }}
       >
         {tool.name[lang]}

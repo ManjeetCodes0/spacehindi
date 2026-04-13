@@ -18,19 +18,9 @@ export default function ProductCard({ product, lang, index }: ProductCardProps) 
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{ delay: index * 0.06, duration: 0.4, ease: "easeOut" as const }}
-      className="group h-full flex flex-col rounded-2xl overflow-hidden transition-all duration-300"
+      className="group h-full flex flex-col rounded-2xl overflow-hidden transition-all duration-300 bg-space-elevated border border-space-border hover:border-neon-violet/55 hover:shadow-[0_0_32px_rgba(139,92,246,0.3)]"
       style={{
-        background: "#000000",
-        border: "1.5px solid rgba(168,130,255,0.45)",
-        boxShadow: "0 0 14px rgba(139,92,246,0.18), 0 0 2px rgba(168,130,255,0.25)",
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.borderColor = "rgba(168,130,255,0.85)";
-        e.currentTarget.style.boxShadow = "0 0 32px rgba(139,92,246,0.4), 0 0 4px rgba(168,130,255,0.5)";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.borderColor = "rgba(168,130,255,0.45)";
-        e.currentTarget.style.boxShadow = "0 0 14px rgba(139,92,246,0.18), 0 0 2px rgba(168,130,255,0.25)";
+        boxShadow: "0 0 14px rgba(139,92,246,0.14), 0 0 2px rgba(168,130,255,0.2)",
       }}
     >
       {/* Product Image */}
@@ -69,7 +59,7 @@ export default function ProductCard({ product, lang, index }: ProductCardProps) 
           className="text-base font-semibold leading-snug mb-1"
           style={{
             fontFamily: "var(--font-playfair), Georgia, serif",
-            color: "#f5f5f7",
+            color: "var(--text-primary)",
           }}
         >
           {product.title}
@@ -80,7 +70,7 @@ export default function ProductCard({ product, lang, index }: ProductCardProps) 
           className="text-sm mb-3"
           style={{
             fontFamily: "var(--font-noto-sans-devanagari), system-ui",
-            color: "#d4d4d8",
+            color: "var(--text-secondary)",
           }}
         >
           {product.hindiTitle}
@@ -90,7 +80,7 @@ export default function ProductCard({ product, lang, index }: ProductCardProps) 
         <p
           className="text-sm leading-relaxed mb-1"
           style={{
-            color: "#d4d4d8",
+            color: "var(--text-secondary)",
             fontFamily: isHindi
               ? "var(--font-noto-sans-devanagari), system-ui"
               : "var(--font-inter), system-ui",
@@ -101,7 +91,7 @@ export default function ProductCard({ product, lang, index }: ProductCardProps) 
         <p
           className="text-xs leading-relaxed mb-5"
           style={{
-            color: "#a1a1aa",
+            color: "var(--text-muted)",
             fontFamily: isHindi
               ? "var(--font-inter), system-ui"
               : "var(--font-noto-sans-devanagari), system-ui",

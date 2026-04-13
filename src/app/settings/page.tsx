@@ -6,18 +6,15 @@ import { motion } from "framer-motion";
 import { updateProfile, updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
 import { doc, updateDoc } from "firebase/firestore";
 import { useAuth } from "@/context/AuthContext";
-import { useLang } from "@/context/LanguageContext";
-import { useTheme } from "@/context/ThemeContext";
+
 import { getFirebaseAuth, getFirebaseDb } from "@/lib/firebase";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
 export default function SettingsPage() {
   const { user, firebaseUser, loading, logout } = useAuth();
-  const { lang, toggleLang } = useLang();
-  const { theme, toggleTheme } = useTheme();
   const router = useRouter();
-  const t = lang === "en" ? en : hi;
+  const t = en;
 
   const [displayName, setDisplayName] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
@@ -227,30 +224,6 @@ export default function SettingsPage() {
               </SettingsCard>
             )}
 
-            {/* Appearance */}
-            <SettingsCard title={t.appearanceSection}>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>{t.theme}</p>
-                    <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>
-                      {theme === "dark" ? t.dark : t.light}
-                    </p>
-                  </div>
-                  <ToggleButton active={theme === "dark"} onClick={toggleTheme} />
-                </div>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>{t.language}</p>
-                    <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>
-                      {lang === "en" ? "English" : "हिंदी"}
-                    </p>
-                  </div>
-                  <ToggleButton active={lang === "hi"} onClick={toggleLang} labelOff="EN" labelOn="हि" />
-                </div>
-              </div>
-            </SettingsCard>
-
             {/* Danger Zone */}
             <SettingsCard title={t.dangerZone} danger>
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -306,26 +279,6 @@ function SettingsCard({ title, children, danger = false }: { title: string; chil
   );
 }
 
-/* ─── Toggle Button ─── */
-function ToggleButton({ active, onClick, labelOff, labelOn }: { active: boolean; onClick: () => void; labelOff?: string; labelOn?: string }) {
-  return (
-    <button
-      onClick={onClick}
-      className="relative w-12 h-7 rounded-full transition-colors cursor-pointer"
-      style={{ backgroundColor: active ? "#8b5cf6" : "rgba(255,255,255,0.1)" }}
-    >
-      <motion.div
-        className="absolute top-1 w-5 h-5 rounded-full bg-white flex items-center justify-center text-[9px] font-bold"
-        animate={{ left: active ? 24 : 4 }}
-        transition={{ type: "spring", stiffness: 500, damping: 30 }}
-        style={{ color: active ? "#8b5cf6" : "#666" }}
-      >
-        {active ? (labelOn || "") : (labelOff || "")}
-      </motion.div>
-    </button>
-  );
-}
-
 /* ─── Translations ─── */
 const en = {
   title: "Settings",
@@ -342,11 +295,6 @@ const en = {
   changePassword: "Update Password",
   passwordSaved: "Password updated successfully!",
   passwordError: "Failed to update password. Check your current password.",
-  appearanceSection: "Appearance",
-  theme: "Dark Mode",
-  dark: "Dark theme is active",
-  light: "Light theme is active",
-  language: "Language",
   dangerZone: "Danger Zone",
   deleteAccount: "Delete Account",
   deleteDesc: "Permanently delete your account and all data",
@@ -358,33 +306,4 @@ const en = {
   logoutButton: "Logout",
 };
 
-const hi = {
-  title: "सेटिंग्स",
-  profileSection: "प्रोफ़ाइल",
-  displayName: "प्रदर्शन नाम",
-  emailLabel: "ईमेल",
-  saveProfile: "बदलाव सहेजें",
-  saving: "सहेजा जा रहा है...",
-  profileSaved: "प्रोफ़ाइल सफलतापूर्वक अपडेट हो गई!",
-  profileError: "प्रोफ़ाइल अपडेट करने में विफल",
-  passwordSection: "पासवर्ड बदलें",
-  currentPassword: "वर्तमान पासवर्ड",
-  newPassword: "नया पासवर्ड",
-  changePassword: "पासवर्ड अपडेट करें",
-  passwordSaved: "पासवर्ड सफलतापूर्वक अपडेट हो गया!",
-  passwordError: "पासवर्ड अपडेट करने में विफल। अपना वर्तमान पासवर्ड जांचें।",
-  appearanceSection: "दिखावट",
-  theme: "डार्क मोड",
-  dark: "डार्क थीम सक्रिय है",
-  light: "लाइट थीम सक्रिय है",
-  language: "भाषा",
-  dangerZone: "खतरनाक क्षेत्र",
-  deleteAccount: "खाता हटाएं",
-  deleteDesc: "अपना खाता और सारा डेटा स्थायी रूप से हटाएं",
-  deleteButton: "खाता हटाएं",
-  deleteConfirm: "क्या आप वाकई ऐसा करना चाहते हैं? यह क्रिया पूर्ववत नहीं की जा सकती।",
-  deleteError: "खाता हटाने में विफल। आपको पहले फिर से लॉगिन करना होगा।",
-  logoutLabel: "साइन आउट",
-  logoutDesc: "अपने खाते से साइन आउट करें",
-  logoutButton: "लॉगआउट",
-};
+

@@ -1,0 +1,96 @@
+# .claudeignore — files Claude should skip to reduce token usage.
+# Pattern syntax mirrors .gitignore.
+
+# ── Dependencies (huge, never read directly) ─────────────────────
+node_modules/
+.pnp
+.pnp.*
+.yarn/
+
+# ── Build output & caches ────────────────────────────────────────
+.next/
+out/
+dist/
+build/
+coverage/
+.vercel/
+.sanity/
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+next-env.d.ts
+
+# ── Lockfiles (massive, rarely useful to read) ───────────────────
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# ── Secrets & credentials ────────────────────────────────────────
+.env
+.env.*
+!.env.example
+gcp-key.json
+*-credentials.json
+*-key.json
+*.pem
+*.key
+*.p12
+service-account*.json
+
+# ── Binary / media assets (not readable as text) ─────────────────
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.svg
+*.ico
+*.mp4
+*.webm
+*.mov
+*.mp3
+*.wav
+*.ogg
+*.woff
+*.woff2
+*.ttf
+*.otf
+*.eot
+*.pdf
+*.zip
+*.tar
+*.gz
+*.7z
+*.rar
+
+# ── Public static assets folder ──────────────────────────────────
+public/core/
+public/default-space/
+public/earthview/
+public/universe/
+
+# ── Logs ─────────────────────────────────────────────────────────
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# ── IDE & OS junk ────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ── Git internals ────────────────────────────────────────────────
+.git/
+
+# ── Misc heavy/irrelevant files at repo root ─────────────────────
+Astron - Astronomy Elementor Template Kit.jpg
+deploy-prod.ps1
+Dockerfile
+.dockerignore
+.gcloudignore
+firebase.json
+firestore.rules

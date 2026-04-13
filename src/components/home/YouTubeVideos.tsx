@@ -115,6 +115,21 @@ export default function YouTubeVideos({ lang, channelId }: YouTubeVideosProps) {
       </div>
 
       {/* Videos grid */}
+      {/* SEO: static description visible to crawlers */}
+      <noscript>
+        <div className="text-center py-8">
+          <p className="text-sm text-text-secondary">
+            Watch our latest Hindi space science videos — ISRO mission updates, NASA discoveries,
+            solar system documentaries, and astrophysics explainers on our YouTube channel ScienceHindi 360.
+          </p>
+          <p className="text-sm text-text-muted mt-2">
+            <a href={`https://www.youtube.com/channel/${channelId}`} className="text-red-400 underline">
+              Visit our YouTube Channel
+            </a>
+          </p>
+        </div>
+      </noscript>
+
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {Array.from({ length: 3 }).map((_, i) => (

@@ -87,10 +87,15 @@ function AnimatedCounter({
   color: string;
   inView: boolean;
 }) {
-  const [display, setDisplay] = useState(0);
+  const [hasAnimated, setHasAnimated] = useState(false);
+  const [display, setDisplay] = useState(target); // Start with real value for SSR/crawlers
 
   useEffect(() => {
-    if (!inView) return;
+    if (!inView || hasAnimated) return;
+
+    // Reset to 0 for animation start
+    setDisplay(0);
+    setHasAnimated(true);
 
     const duration = 2000;
     const start = performance.now();
@@ -104,18 +109,19 @@ function AnimatedCounter({
     };
 
     requestAnimationFrame(tick);
-  }, [inView, target]);
+  }, [inView, target, hasAnimated]);
 
+  // Use explicit "en-US" locale to avoid server/client hydration mismatch
   const formatted =
     target >= 1000
-      ? Math.round(display).toLocaleString()
+      ? Math.round(display).toLocaleString("en-US")
       : display < 10
         ? display.toFixed(1)
         : display.toFixed(1);
 
   return (
     <span className="text-3xl sm:text-4xl md:text-5xl font-bold tabular-nums" style={{ color }}>
-      {inView ? formatted : "0"}
+      {formatted}
       <span className="text-lg sm:text-xl ml-1">{suffix}</span>
     </span>
   );

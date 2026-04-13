@@ -1,8 +1,8 @@
 /**
- * ScienceHindi 360 — Interactive Auto News Post Pipeline
+ * ScienceHindi 360 — Interactive Auto News Post Pipeline (Hindi-Only)
  *
  * Fetches RSS feeds, presents top topics for selection,
- * asks for word count, generates bilingual sectioned articles
+ * asks for word count, generates Hindi-only sectioned articles
  * with hyper-realistic image prompts via Vertex AI Gemini, publishes to Sanity.
  *
  * Usage: npm run post-news
@@ -91,110 +91,118 @@ interface FeedItem {
 }
 
 interface ArticleSection {
-  headingEn: string;
   headingHi: string;
-  contentEn: string;
   contentHi: string;
   imagePrompt: string;
 }
 
 interface FAQItem {
-  questionEn: string;
   questionHi: string;
-  answerEn: string;
   answerHi: string;
 }
 
 interface GeminiResponse {
   titleHindi: string;
-  titleEnglish: string;
   slug: string;
-  metaDescriptionEn: string;
   metaDescriptionHi: string;
   heroImagePrompt: string;
   sections: ArticleSection[];
   infographicFacts: string[];
-  infographicFactsEnglish: string[];
   scienceCorner: Array<{
     term: string;
     definitionHi: string;
-    definitionEn: string;
   }>;
   conclusion: string;
-  conclusionEnglish: string;
   faq: FAQItem[];
   tags: string[];
 }
 
-// ─── Gemini System Prompt ──────────────────────────────────────────────────────
+// ─── Gemini System Prompt (Hindi-Only) ────────────────────────────────────────
 
 function buildSystemPrompt(minWords: number): string {
-  return `You are a friendly, passionate science educator for the website ScienceHindi. Imagine you are explaining the mysteries of space to a curious 20-year-old friend over chai. Don't be a robot — be a storyteller. Make them go "whoa, seriously?!" while reading.
+  return `You are a professional, knowledgeable science educator and journalist for the website ScienceHindi. Your goal is to educate and inform readers about the mysteries of space with clarity and authority. 
 
-Your job: Take a space news article and turn it into a LONG, exciting, story-like deep-dive article in BOTH Hindi and English. Minimum ${minWords} words PER LANGUAGE.
+Your job: Take a space news article and turn it into a LONG, structured, informative, and engaging deep-dive article in HINDI ONLY. Minimum \${minWords} words.
 
-═══ LANGUAGE RULES ═══
+═══ HINDI TONE & LANGUAGE RULES ═══
 
-ENGLISH TONE:
-- Use simple, everyday English. Write like you're texting a smart friend, not writing a research paper.
-- BAD: "The celestial body exhibited significant gravitational anomalies."
-- GOOD: "This planet has a very strange pull of gravity — like, weirdly strong."
-- Use short sentences. Ask questions to the reader. Add excitement naturally.
-- It's okay to say "pretty cool", "insane", "mind-blowing" — be real.
+IMPORTANT: Write in SIMPLE, EVERYDAY Hindi that a normal Indian person uses daily. DO NOT use deep, heavy, Sanskritized Hindi words. Instead, freely use common English words written in Devanagari script (Hindi transliteration).
 
-HINDI TONE:
-- Write in natural, simple Hindi that an Indian reader speaks daily. NOT Shuddh/Sanskrit Hindi, and NOT Hinglish full of English words.
-- Use HINDI words for common concepts. Only use English for proper nouns (NASA, ISRO, SpaceX, James Webb) or terms that have no simple Hindi equivalent.
-- BAD (too much English): "Space Science के हिसाब से ये Star बहुत ही अजीब है!"
-- BAD (too Shuddh): "खगोलभौतिकी के अनुसार यह नक्षत्र अत्यंत विलक्षण है।"
-- GOOD: "अंतरिक्ष विज्ञान के हिसाब से ये तारा बहुत ही अजीब है!"
-- Use Hindi words: ग्रह (not Planet), तारा (not Star), चाँद (not Moon), सूरज (not Sun), धरती (not Earth), रॉकेट (not Rocket — this is fine as it's commonly used in Hindi), उपग्रह (not Satellite), गुरुत्वाकर्षण (not Gravity), आकाशगंगा (not Galaxy), दूरबीन (not Telescope), कक्षा (not Orbit), ब्लैक होल (accepted — no simple Hindi word)
-- Reference India: mention ISRO achievements, compare distances/sizes with Indian landmarks (e.g., "ये इतना बड़ा है कि दिल्ली से मुंबई की दूरी इसके सामने कुछ नहीं"), use Indian units where relatable.
-- Write like a friendly Indian science teacher — "तो चलिए समझते हैं...", "अब यहाँ मज़ा आता है...", "सोचो ज़रा..."
-- Keep it conversational. Use "आप", "हम", "दोस्तों" — talk TO the reader.
+LANGUAGE STYLE:
+- Use simple, easy-to-read Hindi mixed with common English words written in Hindi script.
+- For scientific/technical terms: ALWAYS use the English word written in Hindi (Devanagari). Do NOT translate them into deep Hindi equivalents.
+- The tone should be like an educated Indian person explaining science to a friend — professional but accessible.
+
+WORD CHOICES — USE THESE (English in Hindi script), NOT deep Hindi:
+- Use "स्पेस" NOT "अंतरिक्ष", Use "प्लैनेट" NOT "ग्रह", Use "स्टार" NOT "तारा" or "नक्षत्र"
+- Use "साइंटिस्ट" NOT "वैज्ञानिक", Use "डिस्कवरी" NOT "खोज" or "अन्वेषण"
+- Use "ग्रैविटी" NOT "गुरुत्वाकर्षण", Use "ऑर्बिट" NOT "कक्षा"
+- Use "टेलीस्कोप" NOT "दूरदर्शी", Use "गैलेक्सी" NOT "आकाशगंगा"
+- Use "एस्ट्रोनॉट" NOT "अंतरिक्षयात्री", Use "मिशन" NOT "अभियान"
+- Use "रिसर्च" NOT "अनुसंधान", Use "डेटा" NOT "आंकड़े"
+- Use "टेक्नोलॉजी" NOT "प्रौद्योगिकी", Use "एनर्जी" NOT "ऊर्जा"
+- Use "एटमॉस्फ़ियर" NOT "वायुमंडल", Use "सरफ़ेस" NOT "सतह" (both okay)
+- Use "सोलर सिस्टम" NOT "सौरमंडल", Use "ब्लैक होल" as-is
+- Use "रेडिएशन" NOT "विकिरण", Use "यूनिवर्स" NOT "ब्रह्मांड"
+- Use "लाइट ईयर" NOT "प्रकाश वर्ष", Use "ऑक्सीजन" as-is
+- Use "इम्पैक्ट" NOT "प्रभाव", Use "डिस्टेंस" or "दूरी" (both okay)
+- Use "रॉकेट", "सैटेलाइट", "NASA", "ISRO", "SpaceX" directly
+
+EXAMPLES:
+- BAD (too deep Hindi): "अंतरिक्ष विज्ञान के दृष्टिकोण से, यह तारा कई अद्वितीय विशेषताएँ प्रस्तुत करता है।"
+- BAD (too casual): "दोस्तों, सोचो ज़रा, ये तारा बहुत ही अजीब है!"
+- GOOD: "स्पेस साइंस के हिसाब से, यह स्टार काफ़ी यूनिक फ़ीचर्स रखता है जो साइंटिस्ट्स को हैरान कर रहे हैं।"
+- GOOD: "NASA के रिसर्चर्स ने इस प्लैनेट पर वॉटर के साइन्स डिटेक्ट किए हैं, जो एक बड़ी डिस्कवरी है।"
+- GOOD: "यह ब्लैक होल हमारे सोलर सिस्टम से करोड़ों लाइट ईयर दूर है और इसकी ग्रैविटी बेहद पावरफ़ुल है।"
+
+AVOID:
+- Deep/heavy Hindi words like: दृष्टिकोण, अद्वितीय, विशेषताएँ, प्रस्तुत, अन्वेषण, गुरुत्वाकर्षण, अंतरिक्षयात्री, प्रौद्योगिकी, विकिरण, सौरमंडल, वायुमंडल, अनुसंधान
+- Casual filler words like: "अरे", "दोस्तों", "यार", "मज़ा आता है", "सोचो ज़रा"
+- Writing English words in English script mid-sentence (write them in Devanagari instead)
+
+KEEP THESE IN HINDI (don't convert to English):
+- Basic Hindi grammar words: है, हैं, का, की, के, में, से, पर, और, लेकिन, क्योंकि, इसलिए
+- Common Hindi words everyone knows: बड़ा, छोटा, नया, पुराना, दूर, करीब, तेज़, धीमा, ज़्यादा, कम, पहला, आखिरी
+- Simple Hindi verbs: मिला, देखा, बताया, किया, हुआ, दिखाया, भेजा, बनाया
+
+TONE:
+- Professional but easy to understand — like a Hindi news anchor on a science show
+- Reference India: Mention ISRO's contributions where relevant, use comparative metrics Indians can relate to
+- Use "आप" (respectful you) — maintain professional tone, not casual
 
 ═══ OUTPUT FORMAT ═══
 
 Output ONLY valid JSON with this exact structure:
 
 {
-  "titleHindi": "Catchy, exciting Hindi headline (60-70 chars). Use natural Hindi, not English words.",
-  "titleEnglish": "Catchy, clear English headline — simple words, big curiosity (60-70 chars)",
-  "slug": "url-friendly-slug-lowercase-hyphens",
-  "metaDescriptionEn": "155-char English description that makes you want to read more",
-  "metaDescriptionHi": "155-char Hindi description in natural Hindi — minimal English words",
+  "titleHindi": "Catchy, clear Hindi headline (60-70 chars). Use simple Hindi + English words in Devanagari. Example: 'NASA ने खोजा नया प्लैनेट — वॉटर के मिले संकेत'",
+  "slug": "url-friendly-slug-lowercase-hyphens-in-english",
+  "metaDescriptionHi": "155-char Hindi description using simple Hindi — summarizing the key points",
   "heroImagePrompt": "A hyper-realistic, cinematic 8K image prompt for the hero banner. Describe a breathtaking space scene related to the article. Include: lighting, camera angle, atmosphere, textures, scientific accuracy. Style: NASA photography meets sci-fi concept art. NO text/words in image.",
 
   "sections": [
     {
-      "headingEn": "Short, punchy section heading in English",
-      "headingHi": "Short, punchy section heading in natural Hindi",
-      "contentEn": "3-5 paragraphs. Write like you're telling a story to a friend. Use short sentences. Ask questions. Add 'wow' moments. Minimum 150 words.",
-      "contentHi": "3-5 paragraphs. Same energy in natural Hindi. Use Hindi words (ग्रह, तारा, अंतरिक्ष, रॉकेट). Only English for proper nouns (NASA, ISRO). Add India-relatable examples. Minimum 150 words.",
+      "headingHi": "Clear, informative section heading in simple Hindi + English terms in Devanagari",
+      "contentHi": "3-5 paragraphs. Simple, accessible Hindi with English scientific terms in Devanagari. Minimum 150 words.",
       "imagePrompt": "Hyper-realistic, cinematic 8K image prompt specific to THIS section. Describe the exact space scene, equipment, or phenomenon. Include: dramatic lighting, photorealistic textures, volumetric atmosphere. Style: NASA/ESA photography quality. NO text in image."
     }
   ],
 
-  "infographicFacts": ["5-7 mind-blowing facts in natural Hindi — short, punchy, shareable. Use Hindi words."],
-  "infographicFactsEnglish": ["Same 5-7 facts in simple English — like tweet-sized wow moments"],
+  "infographicFacts": ["5-7 fascinating scientific facts in simple Hindi — concise, impactful, and educational. Use English terms in Devanagari."],
 
   "scienceCorner": [
     {
       "term": "Scientific Term (in English)",
-      "definitionHi": "Simple Hindi explanation — like explaining to a friend, use Hindi words",
-      "definitionEn": "Simple English explanation — no jargon, just clarity"
+      "definitionHi": "Clear, simple Hindi explanation using English words in Devanagari where needed"
     }
   ],
 
-  "conclusion": "Inspiring closing paragraph in natural Hindi (50+ words). End with a thought that stays with the reader.",
-  "conclusionEnglish": "Inspiring closing paragraph in simple English (50+ words). Leave them thinking about the universe.",
+  "conclusion": "An insightful closing paragraph in simple Hindi (50+ words). Summarize the significance of the discovery or topic.",
 
   "faq": [
     {
-      "questionEn": "A question a curious reader would actually Google about this topic",
-      "questionHi": "Same question in natural Hindi",
-      "answerEn": "Clear 2-3 sentence answer in simple English",
-      "answerHi": "Clear 2-3 sentence answer in natural Hindi"
+      "questionHi": "A relevant question in simple Hindi that a reader might search on Google about this topic",
+      "answerHi": "Clear 2-3 sentence answer in simple Hindi"
     }
   ],
 
@@ -203,19 +211,18 @@ Output ONLY valid JSON with this exact structure:
 
 ═══ CRITICAL RULES ═══
 
-1. Generate 4-6 sections. Each section MUST have 150+ words per language.
-2. Total content MUST be ${minWords}+ words per language across all sections combined.
+1. Generate 4-6 sections. Each section MUST have 150+ words.
+2. Total content MUST be \${minWords}+ words across all sections combined.
 3. Each section gets a UNIQUE, detailed hyper-realistic image prompt (50+ words each).
 4. Image prompts must be photorealistic — describe as if directing a NASA photographer. Include camera specs, lighting, atmosphere.
-5. Generate 3-5 FAQ items — questions people would actually search on Google.
-6. Both languages must feel NATIVE — English should not feel translated from Hindi, and Hindi should not feel translated from English. Write each independently.
-7. Hindi MUST be natural Hindi. Use Hindi words: अंतरिक्ष (not Space), विज्ञान (not Science), ग्रह (not Planet), तारा (not Star), ब्रह्मांड (not Universe), आकाशगंगा (not Galaxy), दूरबीन (not Telescope). Only use English for proper nouns like NASA, ISRO, SpaceX, James Webb, Chandrayaan, Mangalyaan.
-8. NEVER use Shuddh Hindi like "खगोलभौतिकी", "नक्षत्रमंडल", "अत्यंत विलक्षण". Keep it simple and relatable.
-9. Add India-specific references: compare with Indian landmarks, mention ISRO missions, use Indian examples to make content relatable for Indian readers.
-10. Write for the web: short paragraphs, hooks at the start of each section, scannable structure.
-11. Be a storyteller, not a textbook. Every section should have at least one "wow" moment or surprising detail.
-12. Tags: ONLY use broad, general tags like "space news", "universe", "planet", "nasa", "isro", "galaxy" etc. Maximum 5 tags. NO specific/niche tags.
-13. Output ONLY valid JSON. No markdown, no code blocks, no extra text.`;
+5. Generate 3-5 FAQ items — questions people would actually search on Google, in Hindi.
+6. USE SIMPLE HINDI. Use English words written in Devanagari for all scientific/technical terms. DO NOT use deep Sanskritized Hindi words.
+7. Avoid casual filler words (अरे, दोस्तों, यार) but also avoid overly formal/heavy words (दृष्टिकोण, अद्वितीय, प्रस्तुत, अन्वेषण).
+8. Write for the web: short paragraphs, engaging hooks, and a scannable structure.
+9. Maintain a professional but accessible tone throughout — like a Hindi science news show.
+10. Tags: ONLY use broad, general tags. Maximum 5 tags. NO specific/niche tags.
+11. The slug MUST be in English (lowercase, hyphens) for URL-friendliness.
+12. Output ONLY valid JSON. No markdown, no code blocks, no extra text.`;
 }
 
 // ─── Step 1: Fetch RSS Feeds ───────────────────────────────────────────────────
@@ -327,7 +334,7 @@ async function processWithGemini(item: FeedItem, minWords: number): Promise<Gemi
 
   const systemPrompt = buildSystemPrompt(minWords);
 
-  const userPrompt = `Transform this space news article into a ScienceHindi 360 premium deep-dive post.
+  const userPrompt = `Transform this space news article into a ScienceHindi 360 premium deep-dive post (HINDI ONLY).
 
 Title: ${item.title}
 Source: ${item.source}
@@ -338,9 +345,10 @@ Article Content:
 ${item.content || item.contentSnippet || item.title}
 
 IMPORTANT:
-- Minimum ${minWords} words PER LANGUAGE across all sections combined.
+- Minimum ${minWords} words across all sections combined (Hindi).
 - Generate 4-6 rich sections with detailed image prompts.
-- Generate 3-5 FAQ items for SEO.
+- Generate 3-5 FAQ items for SEO (in Hindi).
+- Slug must be in English for URL.
 - Output ONLY valid JSON. No markdown code blocks.`;
 
   let lastError: Error | null = null;
@@ -386,7 +394,7 @@ IMPORTANT:
 
       const parsed: GeminiResponse = JSON.parse(cleaned);
 
-      if (!parsed.titleHindi || !parsed.titleEnglish || !parsed.slug || !parsed.sections?.length) {
+      if (!parsed.titleHindi || !parsed.slug || !parsed.sections?.length) {
         throw new Error("Gemini response missing required fields");
       }
 
@@ -396,13 +404,11 @@ IMPORTANT:
         .replace(/-+/g, "-");
 
       // Count words
-      const enWords = parsed.sections.reduce((sum, s) => sum + s.contentEn.split(/\s+/).length, 0);
       const hiWords = parsed.sections.reduce((sum, s) => sum + s.contentHi.split(/\s+/).length, 0);
 
-      console.log(`   Generated: "${parsed.titleEnglish}"`);
+      console.log(`   Generated: "${parsed.titleHindi}"`);
       console.log(`   Slug: ${parsed.slug}`);
       console.log(`   Sections: ${parsed.sections.length}`);
-      console.log(`   English words: ~${enWords}`);
       console.log(`   Hindi words: ~${hiWords}`);
       console.log(`   Image prompts: ${parsed.sections.length + 1} (hero + ${parsed.sections.length} sections)`);
       console.log(`   FAQ items: ${parsed.faq?.length || 0}`);
@@ -599,7 +605,7 @@ async function generateAllImages(
   return { heroImage, sectionImages };
 }
 
-// ─── Step 6: Create Sanity Document ─────────────────────────────────────────────
+// ─── Step 6: Create Sanity Document (Hindi-Only) ────────────────────────────────
 
 async function createSanityPost(
   data: GeminiResponse,
@@ -611,39 +617,39 @@ async function createSanityPost(
   const doc = {
     _type: SANITY_DOC_TYPE,
     titleHindi: data.titleHindi,
-    titleEnglish: data.titleEnglish,
+    titleEnglish: "", // No English title
     slug: { _type: "slug", current: data.slug },
-    metaDescriptionEn: data.metaDescriptionEn || "",
     metaDescriptionHi: data.metaDescriptionHi || "",
+    metaDescriptionEn: "",
     heroImagePrompt: data.heroImagePrompt || "",
     sections: (data.sections || []).map((s, i) => ({
       _key: `sec-${i}`,
-      headingEn: s.headingEn,
       headingHi: s.headingHi,
-      contentEn: s.contentEn,
+      headingEn: "",
       contentHi: s.contentHi,
+      contentEn: "",
       imagePrompt: s.imagePrompt,
       ...(imageRefs.sectionImages[i] ? { sectionImage: imageRefs.sectionImages[i] } : {}),
     })),
-    // Keep flat content for backward compat / excerpts
+    // Flat content for backward compat / excerpts
     content: data.sections.map((s) => `## ${s.headingHi}\n\n${s.contentHi}`).join("\n\n"),
-    contentEnglish: data.sections.map((s) => `## ${s.headingEn}\n\n${s.contentEn}`).join("\n\n"),
+    contentEnglish: "",
     infographicFacts: data.infographicFacts || [],
-    infographicFactsEnglish: data.infographicFactsEnglish || [],
+    infographicFactsEnglish: [],
     scienceCorner: (data.scienceCorner || []).map((item, i) => ({
       _key: `sc-${i}`,
       term: item.term,
       definitionHi: item.definitionHi,
-      definitionEn: item.definitionEn,
+      definitionEn: "",
     })),
     conclusion: data.conclusion,
-    conclusionEnglish: data.conclusionEnglish || "",
+    conclusionEnglish: "",
     faq: (data.faq || []).map((item, i) => ({
       _key: `faq-${i}`,
-      questionEn: item.questionEn,
       questionHi: item.questionHi,
-      answerEn: item.answerEn,
+      questionEn: "",
       answerHi: item.answerHi,
+      answerEn: "",
     })),
     tags: data.tags || [],
     sourceUrl: sourceItem.link,
@@ -660,21 +666,247 @@ async function createSanityPost(
   return created;
 }
 
+// ─── Gemini System Prompt for Link-Based Articles ────────────────────────────
+
+function buildLinkSystemPrompt(minWords: number): string {
+  return `You are a professional, knowledgeable science educator and journalist for the website ScienceHindi. Your goal is to educate and inform readers about the mysteries of space with clarity and authority.
+
+Your job: You will be given a URL of an article from another website. You MUST:
+1. Visit and read the article at the given URL thoroughly.
+2. Understand the core topic, facts, and information presented.
+3. Write a COMPLETELY NEW, ORIGINAL article in HINDI ONLY — do NOT copy or translate the source article. Rewrite everything in your own words with fresh perspective.
+4. ADD NEW KNOWLEDGE: Use Google Search to find the LATEST information, recent developments, and additional facts about this topic that the source article may not have covered. Enrich the article with this new data.
+5. The final article must be significantly more informative and detailed than the source. Minimum \${minWords} words.
+
+═══ HINDI TONE & LANGUAGE RULES ═══
+
+IMPORTANT: Write in SIMPLE, EVERYDAY Hindi that a normal Indian person uses daily. DO NOT use deep, heavy, Sanskritized Hindi words. Instead, freely use common English words written in Devanagari script (Hindi transliteration).
+
+LANGUAGE STYLE:
+- Use simple, easy-to-read Hindi mixed with common English words written in Hindi script.
+- For scientific/technical terms: ALWAYS use the English word written in Hindi (Devanagari). Do NOT translate them into deep Hindi equivalents.
+- The tone should be like an educated Indian person explaining science to a friend — professional but accessible.
+
+WORD CHOICES — USE THESE (English in Hindi script), NOT deep Hindi:
+- Use "स्पेस" NOT "अंतरिक्ष", Use "प्लैनेट" NOT "ग्रह", Use "स्टार" NOT "तारा" or "नक्षत्र"
+- Use "साइंटिस्ट" NOT "वैज्ञानिक", Use "डिस्कवरी" NOT "खोज" or "अन्वेषण"
+- Use "ग्रैविटी" NOT "गुरुत्वाकर्षण", Use "ऑर्बिट" NOT "कक्षा"
+- Use "टेलीस्कोप" NOT "दूरदर्शी", Use "गैलेक्सी" NOT "आकाशगंगा"
+- Use "एस्ट्रोनॉट" NOT "अंतरिक्षयात्री", Use "मिशन" NOT "अभियान"
+- Use "रिसर्च" NOT "अनुसंधान", Use "डेटा" NOT "आंकड़े"
+- Use "टेक्नोलॉजी" NOT "प्रौद्योगिकी", Use "एनर्जी" NOT "ऊर्जा"
+- Use "एटमॉस्फ़ियर" NOT "वायुमंडल", Use "सरफ़ेस" NOT "सतह" (both okay)
+- Use "सोलर सिस्टम" NOT "सौरमंडल", Use "ब्लैक होल" as-is
+- Use "रेडिएशन" NOT "विकिरण", Use "यूनिवर्स" NOT "ब्रह्मांड"
+- Use "लाइट ईयर" NOT "प्रकाश वर्ष", Use "ऑक्सीजन" as-is
+- Use "इम्पैक्ट" NOT "प्रभाव", Use "डिस्टेंस" or "दूरी" (both okay)
+- Use "रॉकेट", "सैटेलाइट", "NASA", "ISRO", "SpaceX" directly
+
+EXAMPLES:
+- BAD (too deep Hindi): "अंतरिक्ष विज्ञान के दृष्टिकोण से, यह तारा कई अद्वितीय विशेषताएँ प्रस्तुत करता है।"
+- BAD (too casual): "दोस्तों, सोचो ज़रा, ये तारा बहुत ही अजीब है!"
+- GOOD: "स्पेस साइंस के हिसाब से, यह स्टार काफ़ी यूनिक फ़ीचर्स रखता है जो साइंटिस्ट्स को हैरान कर रहे हैं।"
+- GOOD: "NASA के रिसर्चर्स ने इस प्लैनेट पर वॉटर के साइन्स डिटेक्ट किए हैं, जो एक बड़ी डिस्कवरी है।"
+- GOOD: "यह ब्लैक होल हमारे सोलर सिस्टम से करोड़ों लाइट ईयर दूर है और इसकी ग्रैविटी बेहद पावरफ़ुल है।"
+
+AVOID:
+- Deep/heavy Hindi words like: दृष्टिकोण, अद्वितीय, विशेषताएँ, प्रस्तुत, अन्वेषण, गुरुत्वाकर्षण, अंतरिक्षयात्री, प्रौद्योगिकी, विकिरण, सौरमंडल, वायुमंडल, अनुसंधान
+- Casual filler words like: "अरे", "दोस्तों", "यार", "मज़ा आता है", "सोचो ज़रा"
+- Writing English words in English script mid-sentence (write them in Devanagari instead)
+
+KEEP THESE IN HINDI (don't convert to English):
+- Basic Hindi grammar words: है, हैं, का, की, के, में, से, पर, और, लेकिन, क्योंकि, इसलिए
+- Common Hindi words everyone knows: बड़ा, छोटा, नया, पुराना, दूर, करीब, तेज़, धीमा, ज़्यादा, कम, पहला, आखिरी
+- Simple Hindi verbs: मिला, देखा, बताया, किया, हुआ, दिखाया, भेजा, बनाया
+
+TONE:
+- Professional but easy to understand — like a Hindi news anchor on a science show
+- Reference India: Mention ISRO's contributions where relevant, use comparative metrics Indians can relate to
+- Use "आप" (respectful you) — maintain professional tone, not casual
+- Write like a HUMAN writer, not like AI. Use natural flow, varied sentence lengths, and conversational transitions.
+
+═══ OUTPUT FORMAT ═══
+
+Output ONLY valid JSON with this exact structure:
+
+{
+  "titleHindi": "Catchy, clear Hindi headline (60-70 chars). Use simple Hindi + English words in Devanagari. Example: 'NASA ने खोजा नया प्लैनेट — वॉटर के मिले संकेत'",
+  "slug": "url-friendly-slug-lowercase-hyphens-in-english",
+  "metaDescriptionHi": "155-char Hindi description using simple Hindi — summarizing the key points",
+  "heroImagePrompt": "A hyper-realistic, cinematic 8K image prompt for the hero banner. Describe a breathtaking space scene related to the article. Include: lighting, camera angle, atmosphere, textures, scientific accuracy. Style: NASA photography meets sci-fi concept art. NO text/words in image.",
+
+  "sections": [
+    {
+      "headingHi": "Clear, informative section heading in simple Hindi + English terms in Devanagari",
+      "contentHi": "3-5 paragraphs. Simple, accessible Hindi with English scientific terms in Devanagari. Minimum 150 words.",
+      "imagePrompt": "Hyper-realistic, cinematic 8K image prompt specific to THIS section. Describe the exact space scene, equipment, or phenomenon. Include: dramatic lighting, photorealistic textures, volumetric atmosphere. Style: NASA/ESA photography quality. NO text in image."
+    }
+  ],
+
+  "infographicFacts": ["5-7 fascinating scientific facts in simple Hindi — concise, impactful, and educational. Use English terms in Devanagari."],
+
+  "scienceCorner": [
+    {
+      "term": "Scientific Term (in English)",
+      "definitionHi": "Clear, simple Hindi explanation using English words in Devanagari where needed"
+    }
+  ],
+
+  "conclusion": "An insightful closing paragraph in simple Hindi (50+ words). Summarize the significance of the discovery or topic.",
+
+  "faq": [
+    {
+      "questionHi": "A relevant question in simple Hindi that a reader might search on Google about this topic",
+      "answerHi": "Clear 2-3 sentence answer in simple Hindi"
+    }
+  ],
+
+  "tags": ["Use ONLY broad, general tags from this list: space news, universe, solar system, planet, mars, moon, sun, earth, stars, galaxy, black hole, nasa, isro, spacex, rocket, satellite, telescope, asteroid, space exploration, astrophysics, cosmos, venus, jupiter, saturn, mercury. Pick 3-5 that match the topic. Do NOT invent specific or niche tags."]
+}
+
+═══ CRITICAL RULES ═══
+
+1. Generate 4-6 sections. Each section MUST have 150+ words.
+2. Total content MUST be \${minWords}+ words across all sections combined.
+3. Each section gets a UNIQUE, detailed hyper-realistic image prompt (50+ words each).
+4. Image prompts must be photorealistic — describe as if directing a NASA photographer. Include camera specs, lighting, atmosphere.
+5. Generate 3-5 FAQ items — questions people would actually search on Google, in Hindi.
+6. USE SIMPLE HINDI. Use English words written in Devanagari for all scientific/technical terms. DO NOT use deep Sanskritized Hindi words.
+7. Avoid casual filler words (अरे, दोस्तों, यार) but also avoid overly formal/heavy words (दृष्टिकोण, अद्वितीय, प्रस्तुत, अन्वेषण).
+8. Write for the web: short paragraphs, engaging hooks, and a scannable structure.
+9. Maintain a professional but accessible tone throughout — like a Hindi science news show.
+10. Tags: ONLY use broad, general tags. Maximum 5 tags. NO specific/niche tags.
+11. The slug MUST be in English (lowercase, hyphens) for URL-friendliness.
+12. Output ONLY valid JSON. No markdown, no code blocks, no extra text.
+13. DO NOT copy the source article. Write a COMPLETELY ORIGINAL article with fresh perspective and additional knowledge.
+14. Write in a natural HUMAN tone — vary sentence lengths, use conversational transitions, avoid robotic patterns.`;
+}
+
+// ─── Step: Process Link with Gemini (Google Search Grounding) ─────────────────
+
+async function processLinkWithGemini(url: string, minWords: number): Promise<GeminiResponse> {
+  const MAX_RETRIES = 2;
+  const systemPrompt = buildLinkSystemPrompt(minWords);
+
+  const userPrompt = `I am giving you a URL of an article. Your job:
+
+1. VISIT this URL and READ the full article: ${url}
+2. UNDERSTAND the topic, key facts, data, and context from that article.
+3. SEARCH THE WEB using Google Search to find the LATEST updates, new developments, recent research, and additional facts about this topic.
+4. Write a COMPLETELY NEW, ORIGINAL deep-dive article in HINDI for ScienceHindi 360. Do NOT copy or translate — rewrite everything from scratch with your own analysis and the extra knowledge you found.
+
+Source URL: ${url}
+
+IMPORTANT:
+- DO NOT just paraphrase the source article. Add significant NEW information from your web search.
+- Include latest data, recent discoveries, and current developments that the source might not cover.
+- Write a much more detailed and informative article than the source.
+- Minimum ${minWords} words across all sections combined (Hindi).
+- Generate 4-6 rich sections with detailed image prompts.
+- Generate 3-5 FAQ items for SEO (in Hindi).
+- Slug must be in English for URL.
+- Write in natural human tone — not robotic AI tone.
+- Output ONLY valid JSON. No markdown code blocks.`;
+
+  let lastError: Error | null = null;
+
+  for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      if (attempt > 0) {
+        const delay = attempt * 15;
+        console.log(`   Retry ${attempt}/${MAX_RETRIES} in ${delay}s...`);
+        await sleep(delay * 1000);
+      }
+
+      console.log(`\n  Sending to Vertex AI ${GEMINI_MODEL} (with Google Search grounding)${attempt > 0 ? ` (attempt ${attempt + 1})` : ""}...`);
+
+      const model = vertexAI.getGenerativeModel({
+        model: GEMINI_MODEL,
+        systemInstruction: {
+          role: "system",
+          parts: [{ text: systemPrompt }],
+        },
+        generationConfig: {
+          temperature: 0.7,
+          maxOutputTokens: 16384,
+        },
+        // @ts-ignore - Vertex AI SDK typings are missing the googleSearch property, but the API accepts it at runtime.
+        tools: [{ googleSearch: {} }],
+      });
+
+      const result = await model.generateContent({
+        contents: [{ role: "user", parts: [{ text: userPrompt }] }],
+      });
+
+      const candidate = result.response?.candidates?.[0];
+      if (!candidate?.content?.parts?.[0]?.text) {
+        throw new Error("Empty response from Vertex AI");
+      }
+
+      const responseText = candidate.content.parts[0].text;
+      const cleaned = responseText
+        .replace(/^```json\s*/i, "")
+        .replace(/^```\s*/i, "")
+        .replace(/\s*```$/i, "")
+        .trim();
+
+      const parsed: GeminiResponse = JSON.parse(cleaned);
+
+      if (!parsed.titleHindi || !parsed.slug || !parsed.sections?.length) {
+        throw new Error("Gemini response missing required fields");
+      }
+
+      parsed.slug = parsed.slug
+        .toLowerCase()
+        .replace(/[^a-z0-9-]/g, "")
+        .replace(/-+/g, "-");
+
+      const hiWords = parsed.sections.reduce((sum, s) => sum + s.contentHi.split(/\s+/).length, 0);
+
+      console.log(`   Generated: "${parsed.titleHindi}"`);
+      console.log(`   Slug: ${parsed.slug}`);
+      console.log(`   Sections: ${parsed.sections.length}`);
+      console.log(`   Hindi words: ~${hiWords}`);
+      console.log(`   Image prompts: ${parsed.sections.length + 1} (hero + ${parsed.sections.length} sections)`);
+      console.log(`   FAQ items: ${parsed.faq?.length || 0}`);
+      console.log(`   Tags: ${parsed.tags?.join(", ")}`);
+
+      return parsed;
+    } catch (err) {
+      lastError = err as Error;
+      const statusCode = (err as { code?: number; status?: number }).code || (err as { status?: number }).status;
+      const is429 = statusCode === 429;
+      const isRetryable = is429 || lastError instanceof SyntaxError;
+
+      if (isRetryable && attempt < MAX_RETRIES) {
+        console.log(`   ${is429 ? "Rate limited" : "Bad JSON response"}, will retry...`);
+        continue;
+      }
+      if (!isRetryable) {
+        throw err;
+      }
+    }
+  }
+
+  throw new Error(`All retries failed. Last error: ${lastError?.message || "Unknown"}`);
+}
+
 // ─── Step: Process Custom Topic with Gemini ─────────────────────────────────────
 
 async function processCustomTopicWithGemini(topic: string, minWords: number): Promise<GeminiResponse> {
   const MAX_RETRIES = 2;
   const systemPrompt = buildSystemPrompt(minWords);
 
-  const userPrompt = `Create a ScienceHindi 360 premium deep-dive post on this topic:
+  const userPrompt = `Create a ScienceHindi 360 premium deep-dive post on this topic (HINDI ONLY):
 
 Topic: ${topic}
 
 IMPORTANT:
-- Research this topic thoroughly and write a comprehensive, accurate article.
-- Minimum ${minWords} words PER LANGUAGE across all sections combined.
+- Research this topic thoroughly and write a comprehensive, accurate article in Hindi.
+- Minimum ${minWords} words across all sections combined.
 - Generate 4-6 rich sections with detailed image prompts.
-- Generate 3-5 FAQ items for SEO.
+- Generate 3-5 FAQ items for SEO (in Hindi).
+- Slug must be in English for URL.
 - Output ONLY valid JSON. No markdown code blocks.`;
 
   let lastError: Error | null = null;
@@ -720,7 +952,7 @@ IMPORTANT:
 
       const parsed: GeminiResponse = JSON.parse(cleaned);
 
-      if (!parsed.titleHindi || !parsed.titleEnglish || !parsed.slug || !parsed.sections?.length) {
+      if (!parsed.titleHindi || !parsed.slug || !parsed.sections?.length) {
         throw new Error("Gemini response missing required fields");
       }
 
@@ -729,13 +961,11 @@ IMPORTANT:
         .replace(/[^a-z0-9-]/g, "")
         .replace(/-+/g, "-");
 
-      const enWords = parsed.sections.reduce((sum, s) => sum + s.contentEn.split(/\s+/).length, 0);
       const hiWords = parsed.sections.reduce((sum, s) => sum + s.contentHi.split(/\s+/).length, 0);
 
-      console.log(`   Generated: "${parsed.titleEnglish}"`);
+      console.log(`   Generated: "${parsed.titleHindi}"`);
       console.log(`   Slug: ${parsed.slug}`);
       console.log(`   Sections: ${parsed.sections.length}`);
-      console.log(`   English words: ~${enWords}`);
       console.log(`   Hindi words: ~${hiWords}`);
       console.log(`   Image prompts: ${parsed.sections.length + 1} (hero + ${parsed.sections.length} sections)`);
       console.log(`   FAQ items: ${parsed.faq?.length || 0}`);
@@ -765,7 +995,7 @@ IMPORTANT:
 
 async function main() {
   console.log("\n╔══════════════════════════════════════════════════════════╗");
-  console.log("║   ScienceHindi 360 — Interactive News Post Pipeline     ║");
+  console.log("║   ScienceHindi 360 — Hindi-Only News Post Pipeline     ║");
   console.log("║   Powered by Vertex AI (Gemini 2.5 Flash + Imagen 3)   ║");
   console.log("╚══════════════════════════════════════════════════════════╝\n");
 
@@ -782,12 +1012,13 @@ async function main() {
   // ── Step 1: Choose mode ──
   console.log("── Step 1: What do you want to create? ──\n");
   console.log("  [1] Write on my own topic");
-  console.log("  [2] Pick from RSS feeds (Space.com, NASA, Phys.org)\n");
+  console.log("  [2] Write from a website link (analyzes & creates original article)");
+  console.log("  [3] Pick from RSS feeds (Space.com, NASA, Phys.org)\n");
 
-  const modeStr = await ask("  Enter your choice (1 or 2): ");
+  const modeStr = await ask("  Enter your choice (1, 2 or 3): ");
   const mode = parseInt(modeStr, 10);
 
-  if (mode !== 1 && mode !== 2) {
+  if (mode !== 1 && mode !== 2 && mode !== 3) {
     console.log("Invalid choice. Exiting.");
     process.exit(1);
   }
@@ -797,9 +1028,9 @@ async function main() {
 
   // ── Step 2: Article length ──
   console.log("\n── Step 2: Article Length ──\n");
-  const wordsStr = await ask("  Minimum words per language (e.g. 800, 1200, 1500): ");
+  const wordsStr = await ask("  Minimum words (e.g. 800, 1200, 1500): ");
   const minWords = parseInt(wordsStr, 10) || 800;
-  console.log(`  Target: ${minWords}+ words per language\n`);
+  console.log(`  Target: ${minWords}+ words (Hindi)\n`);
 
   if (mode === 1) {
     // ── Custom topic flow ──
@@ -818,8 +1049,29 @@ async function main() {
       source: "Custom Topic",
     };
 
-    console.log("── Step 4: Generating Article with Vertex AI Gemini ──");
+    console.log("── Step 4: Generating Hindi Article with Vertex AI Gemini ──");
     geminiData = await processCustomTopicWithGemini(topic, minWords);
+  } else if (mode === 2) {
+    // ── Link-based flow ──
+    console.log("── Step 3: Enter Article URL ──\n");
+    const url = await ask("  Paste the article link: ");
+    if (!url) {
+      console.log("No URL entered. Exiting.");
+      process.exit(1);
+    }
+    console.log(`\n  URL: "${url}"\n`);
+    console.log("  Gemini will visit this link, analyze it, search for latest info,");
+    console.log("  and write a completely original Hindi article.\n");
+
+    // Create a dummy FeedItem for the link-based article
+    selected = {
+      title: url,
+      link: url,
+      source: "Website Link",
+    };
+
+    console.log("── Step 4: Generating Original Hindi Article from Link ──");
+    geminiData = await processLinkWithGemini(url, minWords);
   } else {
     // ── RSS feed flow ──
     console.log("── Step 3: Fetching RSS Feeds ──\n");
@@ -864,7 +1116,7 @@ async function main() {
     selected = topN[choice - 1].item;
     console.log(`\n  Selected: "${selected.title}"\n`);
 
-    console.log("── Step 4: Generating Article with Vertex AI Gemini ──");
+    console.log("── Step 4: Generating Hindi Article with Vertex AI Gemini ──");
     geminiData = await processWithGemini(selected, minWords);
   }
 
@@ -882,9 +1134,9 @@ async function main() {
   console.log("\n╔══════════════════════════════════════════════════════════╗");
   console.log("║   PIPELINE COMPLETE                                     ║");
   console.log("╠══════════════════════════════════════════════════════════╣");
-  console.log(`║  Mode: ${mode === 1 ? "Custom Topic" : "RSS Feed"}`);
+  console.log(`║  Mode: ${mode === 1 ? "Custom Topic" : mode === 2 ? "Website Link" : "RSS Feed"}`);
   console.log(`║  ID: ${doc._id}`);
-  console.log(`║  Title: ${geminiData.titleEnglish}`);
+  console.log(`║  Title (Hindi): ${geminiData.titleHindi}`);
   console.log(`║  Slug: /blog/${geminiData.slug}`);
   console.log(`║  Sections: ${geminiData.sections.length}`);
   console.log(`║  Images: ${[imageRefs.heroImage, ...imageRefs.sectionImages].filter(Boolean).length}/${1 + imageRefs.sectionImages.length}`);

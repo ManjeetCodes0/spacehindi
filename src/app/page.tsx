@@ -1,57 +1,113 @@
-"use client";
+import type { Metadata } from "next";
+import HomeClient from "./HomeClient";
 
-import { Navbar, Space3DHero, Footer } from "@/components/layout";
-import { useLang } from "@/context/LanguageContext";
-import {
-  SpaceNumbers,
-  PlanetGallery,
-  ToolsShowcase,
-  SpaceQuote,
-  YouTubeVideos,
-  FeaturedBlog,
-  UpcomingEvents,
-  NewsletterCTA,
-} from "@/components/home";
+const SITE_URL = "https://sciencehindi.in";
 
-// Replace with your actual YouTube channel ID
-const YOUTUBE_CHANNEL_ID = "UC-RlDqNNv7hCl2cEgi8ux8A";
+export const metadata: Metadata = {
+  title: "ScienceHindi 360 — अंतरिक्ष विज्ञान हिंदी में | Space Science & Astronomy in Hindi",
+  description:
+    "ScienceHindi 360 — हिंदी में अंतरिक्ष विज्ञान सीखें। Interactive space tools, planet explorer, orbit simulator, space age calculator, ISRO & NASA missions, और गहन विज्ञान कहानियाँ।",
+  keywords: [
+    "space science in hindi",
+    "अंतरिक्ष विज्ञान",
+    "hindi science education",
+    "ISRO",
+    "NASA",
+    "solar system in hindi",
+    "सौरमंडल",
+    "space tools",
+    "planet explorer",
+    "astronomy hindi",
+    "खगोल विज्ञान",
+    "science hindi 360",
+    "sciencehindi",
+  ],
+  alternates: {
+    canonical: SITE_URL,
+  },
+  openGraph: {
+    type: "website",
+    locale: "hi_IN",
+    url: SITE_URL,
+    siteName: "ScienceHindi 360",
+    title: "ScienceHindi 360 — अंतरिक्ष विज्ञान | Space Science & Astronomy in Hindi",
+    description:
+      "हिंदी में अंतरिक्ष विज्ञान सीखें — Interactive space tools, planet explorer, ISRO & NASA missions, orbit simulator और गहन विज्ञान कहानियाँ।",
+    images: [
+      {
+        url: `${SITE_URL}/core/og-cover.webp`,
+        width: 1200,
+        height: 630,
+        alt: "ScienceHindi 360 — Space Science & Astronomy Education in Hindi",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ScienceHindi 360 — अंतरिक्ष विज्ञान | Space Science in Hindi",
+    description:
+      "हिंदी में अंतरिक्ष विज्ञान — Interactive tools, planet explorer, ISRO & NASA missions और गहन विज्ञान कहानियाँ।",
+    images: [`${SITE_URL}/core/og-cover.webp`],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+};
+
+// JSON-LD structured data for Organization + EducationalOrganization
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": ["Organization", "EducationalOrganization"],
+  name: "ScienceHindi 360",
+  url: SITE_URL,
+  logo: `${SITE_URL}/core/og-cover.webp`,
+  description:
+    "India's premier Hindi-language space science education platform — interactive tools, planet explorer, astronomy articles, and ISRO/NASA mission coverage.",
+  sameAs: [
+    "https://www.youtube.com/@ScienceHindi360",
+  ],
+  foundingDate: "2024",
+  knowsAbout: [
+    "Space Science",
+    "Astronomy",
+    "ISRO Missions",
+    "NASA Missions",
+    "Solar System",
+    "Astrophysics",
+  ],
+  inLanguage: ["hi", "en"],
+};
+
+// WebSite schema for sitelinks search box
+const webSiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "ScienceHindi 360",
+  url: SITE_URL,
+  description: "हिंदी में अंतरिक्ष विज्ञान — Space Science Education in Hindi",
+  inLanguage: ["hi", "en"],
+};
 
 export default function Home() {
-  const { lang } = useLang();
-
   return (
     <>
-      <Navbar />
-      <main style={{ background: "var(--bg-primary)" }}>
-        <Space3DHero lang={lang} />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* 1. Cosmic numbers counter */}
-          <SpaceNumbers lang={lang} />
-
-          {/* 2. Interactive planet gallery */}
-          <PlanetGallery lang={lang} />
-
-          {/* 3. Inspirational space quote */}
-          <SpaceQuote lang={lang} />
-
-          {/* 4. Tools showcase */}
-          <ToolsShowcase lang={lang} />
-
-          {/* 5. YouTube latest videos */}
-          <YouTubeVideos lang={lang} channelId={YOUTUBE_CHANNEL_ID} />
-
-          {/* 6. Featured blog posts */}
-          <FeaturedBlog lang={lang} />
-
-          {/* 7. Upcoming space events */}
-          <UpcomingEvents lang={lang} />
-
-          {/* 8. Newsletter CTA */}
-          <NewsletterCTA lang={lang} />
-        </div>
-      </main>
-      <Footer />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteJsonLd) }}
+      />
+      <HomeClient />
     </>
   );
 }

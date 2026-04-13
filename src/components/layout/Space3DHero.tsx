@@ -1,52 +1,32 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
-import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
 import Link from "next/link";
-import Starfield from "./Starfield";
-import { useImageSequence } from "@/hooks/useImageSequence";
 import { celestialBodies } from "@/data/universe/planets";
 
 interface Space3DHeroProps {
   lang: "en" | "hi";
 }
 
-const TOTAL_FRAMES = 240;
-const SCROLL_HEIGHT = 1200;
-const AUTO_PLAY_SPEED = 0.3;
-const AUTO_PLAY_INTERVAL = 50;
-
-function useWindowHeight() {
-  const [h, setH] = useState(800);
-  useEffect(() => {
-    setH(window.innerHeight);
-    const onResize = () => setH(window.innerHeight);
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
-  return h;
-}
-
 const content = {
   en: {
-    heading1: "Explore the",
-    heading2: "Cosmos",
-    subheading: "ब्रह्मांड की खोज करें",
+    heading1: "Space Science &",
+    heading2: "Astronomy in Hindi",
+    subheading: "अंतरिक्ष विज्ञान हिंदी में — ScienceHindi 360",
     description:
       "Interactive space tools, real-time event tracking, and deeply researched science stories — making the universe feel closer.",
     cta1: "Explore Tools",
     cta2: "Read Blog",
-    scrollHint: "Scroll to explore",
   },
   hi: {
-    heading1: "खोजें",
-    heading2: "ब्रह्मांड",
-    subheading: "Explore the Cosmos",
+    heading1: "अंतरिक्ष विज्ञान",
+    heading2: "हिंदी में",
+    subheading: "Space Science & Astronomy — ScienceHindi 360",
     description:
       "इंटरैक्टिव स्पेस टूल्स, रियल-टाइम इवेंट ट्रैकिंग, और गहन विज्ञान कहानियाँ — ब्रह्मांड को करीब लाने के लिए।",
     cta1: "उपकरण देखें",
     cta2: "ब्लॉग पढ़ें",
-    scrollHint: "एक्सप्लोर करने के लिए स्क्रॉल करें",
   },
 };
 
@@ -67,7 +47,7 @@ function HeroStats({ lang }: { lang: "en" | "hi" }) {
 
   useEffect(() => {
     fetch("/api/deep-dive")
-      .then((res) => res.ok ? res.json() : [])
+      .then((res) => (res.ok ? res.json() : []))
       .then((data) => {
         const count = Array.isArray(data) ? data.length : 0;
         setArticleCount(count);
@@ -105,289 +85,261 @@ function HeroStats({ lang }: { lang: "en" | "hi" }) {
 
 export default function Space3DHero({ lang }: Space3DHeroProps) {
   const t = content[lang];
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const currentFrameRef = useRef(0);
-  const autoFrameRef = useRef(0);
-  const isScrollingRef = useRef(false);
-  const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined);
-  const windowHeight = useWindowHeight();
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [videoLoaded, setVideoLoaded] = useState(false);
+  const [videoFailed, setVideoFailed] = useState(false);
+  const isHindi = lang === "hi";
 
-  // Lazy-load the earth image sequence in the background
-  const { images, ready } = useImageSequence({
-    folder: "/earthview",
-    prefix: "ezgif-frame-",
-    totalFrames: TOTAL_FRAMES,
-    extension: "jpg",
-    padLength: 3,
-  });
-
-  // Scroll-driven frame index
-  const { scrollY } = useScroll();
-  const scrollFrame = useTransform(scrollY, [0, SCROLL_HEIGHT], [0, TOTAL_FRAMES - 1]);
-  const [activeFrame, setActiveFrame] = useState(0);
-
-  // Track scroll activity
-  useMotionValueEvent(scrollFrame, "change", (v) => {
-    isScrollingRef.current = true;
-    setActiveFrame(Math.round(v));
-
-    if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
-    scrollTimeoutRef.current = setTimeout(() => {
-      isScrollingRef.current = false;
-      autoFrameRef.current = Math.round(v);
-    }, 2000);
-  });
-
-  // Auto-play when idle
+  // Ensure video plays (handle autoplay policies)
   useEffect(() => {
-    if (!ready) return;
+    const video = videoRef.current;
+    if (!video) return;
 
-    const interval = setInterval(() => {
-      if (!isScrollingRef.current) {
-        autoFrameRef.current =
-          (autoFrameRef.current + AUTO_PLAY_SPEED) % TOTAL_FRAMES;
-        setActiveFrame(Math.round(autoFrameRef.current));
+    const playVideo = async () => {
+      try {
+        await video.play();
+      } catch {
+        // Autoplay blocked — muted videos should always work
+        video.muted = true;
+        try { await video.play(); } catch { /* ignore */ }
       }
-    }, AUTO_PLAY_INTERVAL);
-
-    return () => clearInterval(interval);
-  }, [ready]);
-
-  // Canvas rendering
-  const drawFrame = useCallback(
-    (frameIndex: number) => {
-      const canvas = canvasRef.current;
-      if (!canvas || !images.length) return;
-
-      const ctx = canvas.getContext("2d");
-      if (!ctx) return;
-
-      const clampedIdx = Math.max(
-        0,
-        Math.min(TOTAL_FRAMES - 1, Math.round(frameIndex))
-      );
-      const img = images[clampedIdx];
-      if (!img || !img.complete || img.naturalWidth === 0) return;
-
-      if (currentFrameRef.current === clampedIdx) return;
-      currentFrameRef.current = clampedIdx;
-
-      const cw = canvas.width;
-      const ch = canvas.height;
-      const iw = img.naturalWidth;
-      const ih = img.naturalHeight;
-
-      const scale = Math.max(cw / iw, ch / ih);
-      const sw = iw * scale;
-      const sh = ih * scale;
-      const sx = (cw - sw) / 2;
-      const sy = (ch - sh) / 2;
-
-      ctx.clearRect(0, 0, cw, ch);
-      ctx.drawImage(img, sx, sy, sw, sh);
-    },
-    [images]
-  );
-
-  // Resize canvas
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const resize = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = window.innerWidth * dpr;
-      canvas.height = window.innerHeight * dpr;
-      canvas.style.width = `${window.innerWidth}px`;
-      canvas.style.height = `${window.innerHeight}px`;
-      currentFrameRef.current = -1;
-      drawFrame(activeFrame);
     };
 
-    resize();
-    window.addEventListener("resize", resize);
-    return () => window.removeEventListener("resize", resize);
-  }, [drawFrame, activeFrame]);
+    video.playbackRate = 0.75;
 
-  // Draw on frame change
-  useEffect(() => {
-    drawFrame(activeFrame);
-  }, [activeFrame, drawFrame]);
+    const markLoaded = () => {
+      if (!videoLoaded) {
+        setVideoLoaded(true);
+        playVideo();
+      }
+    };
 
-  // Content fade based on scroll
-  const contentOpacity = useTransform(scrollY, [0, SCROLL_HEIGHT * 0.4], [1, 0]);
-  const contentY = useTransform(scrollY, [0, SCROLL_HEIGHT * 0.4], [0, -60]);
+    // Seamless loop using requestAnimationFrame for frame-accurate rewind.
+    // Checks at ~60fps so we never miss the rewind window on a short video.
+    let rafId: number;
+    const loopCheck = () => {
+      if (video.duration && video.currentTime > video.duration - 0.15) {
+        video.currentTime = 0;
+      }
+      rafId = requestAnimationFrame(loopCheck);
+    };
+    rafId = requestAnimationFrame(loopCheck);
 
-  const isHindi = lang === "hi";
+    // Check if the video already loaded before this effect ran (race condition fix)
+    if (video.readyState >= 3) {
+      markLoaded();
+    }
+
+    // Listen for multiple load-related events to catch all cases
+    video.addEventListener("canplaythrough", markLoaded);
+    video.addEventListener("loadeddata", markLoaded);
+    video.addEventListener("playing", markLoaded);
+
+    // If video errors out, keep showing the static poster fallback
+    const onError = () => setVideoFailed(true);
+    video.addEventListener("error", onError);
+
+    // Fallback: if video takes too long (slow network), keep the poster visible
+    const fallbackTimer = setTimeout(() => {
+      if (!videoLoaded) setVideoFailed(true);
+    }, 8000);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      video.removeEventListener("canplaythrough", markLoaded);
+      video.removeEventListener("loadeddata", markLoaded);
+      video.removeEventListener("playing", markLoaded);
+      video.removeEventListener("error", onError);
+      clearTimeout(fallbackTimer);
+    };
+  }, [videoLoaded]);
 
   return (
     <section
-      ref={sectionRef}
-      className="relative bg-bg-primary"
-      style={{ height: `${SCROLL_HEIGHT + windowHeight}px` }}
+      className="relative h-screen w-full overflow-hidden bg-black"
+      style={{ contentVisibility: "auto", containIntrinsicSize: "auto 100vh" }}
     >
-      {/* Sticky viewport container */}
-      <div className="sticky top-0 h-screen w-full overflow-hidden">
-        {/* Layer 1: Starfield — always visible immediately */}
-        <div className="absolute inset-0 z-0">
-          <Starfield />
-        </div>
+      {/* Layer 1: Background Video — WebM primary, MP4 fallback */}
+      {!videoFailed && (
+        <video
+          ref={videoRef}
+          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000"
+          style={{ opacity: videoLoaded ? 1 : 0 }}
+          autoPlay
+          muted
+          playsInline
+          preload="auto"
+          poster="/core/hero-poster.webp"
+          aria-hidden="true"
+        >
+          <source src="/core/hero-video.webm" type="video/webm" />
+          <source src="/core/hero-video.mp4" type="video/mp4" />
+        </video>
+      )}
 
-        {/* Layer 2: Earth canvas — loads in background, fades in */}
-        <canvas
-          ref={canvasRef}
-          className="absolute inset-0 z-[1] transition-opacity duration-1000"
-          style={{ opacity: ready ? 1 : 0 }}
+      {/* Layer 2: Static fallback — shows while video loads, or permanently if video fails */}
+      {(!videoLoaded || videoFailed) && (
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: "url(/core/hero-poster.webp)" }}
           aria-hidden="true"
         />
+      )}
 
-        {/* Layer 3: Gradient overlays */}
-        <div className="absolute inset-0 z-[2] pointer-events-none">
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.7) 100%)",
-            }}
-          />
-          <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[var(--bg-primary)] to-transparent" />
-          <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-[rgba(0,0,0,0.4)] to-transparent" />
-        </div>
-
-        {/* Layer 4: Content — visible immediately, no glass panel */}
-        <motion.div
-          style={{ opacity: contentOpacity, y: contentY }}
-          className="absolute inset-0 z-[3] flex items-center"
-        >
-          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-2xl">
-              {/* Heading */}
-              <motion.h1
-                custom={0}
-                variants={fadeUp}
-                initial="hidden"
-                animate="visible"
-                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.08] mb-4"
-                style={{
-                  fontFamily: isHindi
-                    ? "var(--font-noto-sans-devanagari), system-ui"
-                    : "var(--font-playfair), Georgia, serif",
-                }}
-              >
-                <span className="text-white">{t.heading1} </span>
-                <span className="text-gradient-violet inline-block">
-                  {t.heading2}
-                </span>
-              </motion.h1>
-
-              {/* Bilingual sub-heading */}
-              <motion.p
-                custom={1}
-                variants={fadeUp}
-                initial="hidden"
-                animate="visible"
-                className="text-xl md:text-2xl font-medium mb-6"
-                style={{
-                  color: "var(--text-muted)",
-                  fontFamily: isHindi
-                    ? "var(--font-playfair), Georgia, serif"
-                    : "var(--font-noto-sans-devanagari), system-ui",
-                }}
-              >
-                {t.subheading}
-              </motion.p>
-
-              {/* Description */}
-              <motion.p
-                custom={2}
-                variants={fadeUp}
-                initial="hidden"
-                animate="visible"
-                className="text-base md:text-lg leading-relaxed mb-10 max-w-xl"
-                style={{ color: "var(--text-secondary)" }}
-              >
-                {t.description}
-              </motion.p>
-
-              {/* CTA Buttons */}
-              <motion.div
-                custom={3}
-                variants={fadeUp}
-                initial="hidden"
-                animate="visible"
-                className="flex flex-col sm:flex-row items-start gap-4"
-              >
-                <Link href="/tools">
-                  <motion.span
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
-                    className="
-                      inline-flex items-center gap-2 px-8 py-3.5 rounded-xl
-                      text-sm font-semibold text-white cursor-pointer
-                      transition-all duration-300
-                    "
-                    style={{
-                      background: "var(--accent)",
-                      boxShadow: "0 0 20px rgba(139,92,246,0.3)",
-                    }}
-                  >
-                    {t.cta1}
-                  </motion.span>
-                </Link>
-
-                <Link href="/blog">
-                  <motion.span
-                    whileHover={{ scale: 1.03 }}
-                    whileTap={{ scale: 0.97 }}
-                    className="
-                      inline-flex items-center gap-2 px-8 py-3.5 rounded-xl
-                      text-sm font-semibold cursor-pointer
-                      border transition-all duration-300
-                    "
-                    style={{
-                      color: "var(--text-primary)",
-                      borderColor: "rgba(255,255,255,0.15)",
-                      background: "rgba(255,255,255,0.04)",
-                    }}
-                  >
-                    {t.cta2}
-                  </motion.span>
-                </Link>
-              </motion.div>
-
-              {/* Dynamic stats */}
-              <HeroStats lang={lang} />
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Scroll hint */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.5, duration: 1 }}
-          style={{ opacity: contentOpacity }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-[4] flex flex-col items-center gap-2"
-        >
-          <p className="text-xs" style={{ color: "var(--text-muted)" }}>{t.scrollHint}</p>
-          <motion.div
-            animate={{ y: [0, 8, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-          >
-            <svg
-              className="w-5 h-5"
-              style={{ color: "var(--text-muted)" }}
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={1.5}
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-            </svg>
-          </motion.div>
-        </motion.div>
+      {/* Layer 3: Gradient overlays for readability */}
+      <div className="absolute inset-0 z-[2] pointer-events-none">
+        {/* Dark vignette */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.65) 100%)",
+          }}
+        />
+        {/* Left-side gradient for text readability */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.4) 40%, transparent 70%)",
+          }}
+        />
+        {/* Bottom fade to page background */}
+        <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-[var(--bg-primary)] to-transparent" />
+        {/* Top subtle darkening for navbar */}
+        <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-[rgba(0,0,0,0.4)] to-transparent" />
       </div>
+
+      {/* Layer 4: Content */}
+      <div className="absolute inset-0 z-[3] flex items-center">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl">
+            {/* Heading */}
+            <motion.h1
+              custom={0}
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.08] mb-4"
+              style={{
+                fontFamily: isHindi
+                  ? "var(--font-noto-sans-devanagari), system-ui"
+                  : "var(--font-playfair), Georgia, serif",
+              }}
+            >
+              <span className="text-white">{t.heading1} </span>
+              <span className="text-gradient-violet inline-block">
+                {t.heading2}
+              </span>
+            </motion.h1>
+
+            {/* Bilingual sub-heading */}
+            <motion.p
+              custom={1}
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              className="text-xl md:text-2xl font-medium mb-6"
+              style={{
+                color: "var(--text-muted)",
+                fontFamily: isHindi
+                  ? "var(--font-playfair), Georgia, serif"
+                  : "var(--font-noto-sans-devanagari), system-ui",
+              }}
+            >
+              {t.subheading}
+            </motion.p>
+
+            {/* Description */}
+            <motion.p
+              custom={2}
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              className="text-base md:text-lg leading-relaxed mb-10 max-w-xl"
+              style={{ color: "var(--text-secondary)" }}
+            >
+              {t.description}
+            </motion.p>
+
+            {/* CTA Buttons */}
+            <motion.div
+              custom={3}
+              variants={fadeUp}
+              initial="hidden"
+              animate="visible"
+              className="flex flex-col sm:flex-row items-start gap-4"
+            >
+              <Link href="/tools">
+                <motion.span
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="
+                    inline-flex items-center gap-2 px-8 py-3.5 rounded-xl
+                    text-sm font-semibold text-white cursor-pointer
+                    transition-all duration-300
+                  "
+                  style={{
+                    background: "var(--accent)",
+                    boxShadow: "0 0 20px rgba(139,92,246,0.3)",
+                  }}
+                >
+                  {t.cta1}
+                </motion.span>
+              </Link>
+
+              <Link href="/blog">
+                <motion.span
+                  whileHover={{ scale: 1.03 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="
+                    inline-flex items-center gap-2 px-8 py-3.5 rounded-xl
+                    text-sm font-semibold cursor-pointer
+                    border transition-all duration-300
+                  "
+                  style={{
+                    color: "var(--text-primary)",
+                    borderColor: "rgba(255,255,255,0.15)",
+                    background: "rgba(255,255,255,0.04)",
+                  }}
+                >
+                  {t.cta2}
+                </motion.span>
+              </Link>
+            </motion.div>
+
+            {/* Dynamic stats */}
+            <HeroStats lang={lang} />
+          </div>
+        </div>
+      </div>
+
+      {/* Scroll hint */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.5, duration: 1 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-[4] flex flex-col items-center gap-2"
+      >
+        <p className="text-xs" style={{ color: "var(--text-muted)" }}>Scroll to explore</p>
+        <motion.div
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <svg
+            className="w-5 h-5"
+            style={{ color: "var(--text-muted)" }}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={1.5}
+            aria-label="Scroll down to explore more content"
+            role="img"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+          </svg>
+        </motion.div>
+      </motion.div>
     </section>
   );
 }

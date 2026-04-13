@@ -92,28 +92,7 @@ export default function SpaceAgeCalculator({ lang }: SpaceAgeCalculatorProps) {
   `;
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="text-center max-w-2xl mx-auto">
-        <motion.h2
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-3xl sm:text-4xl font-bold text-text-primary mb-3"
-          style={{ fontFamily: "var(--font-space-grotesk)" }}
-        >
-          {t.title}
-        </motion.h2>
-        <motion.p
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          className="text-text-secondary"
-        >
-          {t.subtitle}
-        </motion.p>
-      </div>
-
+    <div className="space-y-8 pb-10">
       {/* Input section — Day / Month / Year */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
@@ -194,7 +173,7 @@ export default function SpaceAgeCalculator({ lang }: SpaceAgeCalculatorProps) {
       </motion.div>
 
       {/* Planet grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 lg:gap-8 mt-12">
         {agePlanets.map((planet, i) => (
           <SpaceAgeCard
             key={planet.id}

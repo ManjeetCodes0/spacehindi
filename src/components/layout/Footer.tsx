@@ -1,24 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import { useLang } from "@/context/LanguageContext";
 
 const footerLinks = {
   explore: [
-    { href: "/tools", label: { en: "Space Tools", hi: "स्पेस टूल्स" } },
-    { href: "/quiz", label: { en: "Quizzes", hi: "क्विज़" } },
-    { href: "/events", label: { en: "Live Events", hi: "लाइव इवेंट्स" } },
+    { href: "/tools", label: "Space Tools" },
+    { href: "/quiz", label: "Quizzes" },
+    { href: "/events", label: "Live Events" },
   ],
   learn: [
-    { href: "/blog", label: { en: "Blog", hi: "ब्लॉग" } },
-    { href: "/shop", label: { en: "Shop", hi: "शॉप" } },
-    { href: "/about", label: { en: "About Us", hi: "हमारे बारे में" } },
-    { href: "/contact", label: { en: "Contact Us", hi: "हमसे संपर्क करें" } },
+    { href: "/blog", label: "Blog" },
+    { href: "/shop", label: "Shop" },
+    { href: "/about", label: "About Us" },
+    { href: "/contact", label: "Contact Us" },
   ],
   legal: [
-    { href: "/privacy", label: { en: "Privacy Policy", hi: "गोपनीयता नीति" } },
-    { href: "/terms", label: { en: "Terms of Service", hi: "सेवा की शर्तें" } },
-    { href: "/affiliate-disclosure", label: { en: "Affiliate Disclosure", hi: "एफिलिएट प्रकटीकरण" } },
+    { href: "/privacy", label: "Privacy Policy" },
+    { href: "/terms", label: "Terms of Service" },
+    { href: "/affiliate-disclosure", label: "Affiliate Disclosure" },
   ],
 };
 
@@ -53,7 +52,6 @@ const socialLinks = [
 ];
 
 export default function Footer() {
-  const { lang } = useLang();
   return (
     <footer className="relative border-t border-white/[0.06] bg-space-deep">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
@@ -67,9 +65,7 @@ export default function Footer() {
               ScienceHindi<span className="text-gradient-violet"> 360</span>
             </span>
             <p className="mt-3 text-sm text-text-muted leading-relaxed max-w-xs">
-              {lang === "en"
-                ? "Making the universe accessible through interactive tools, deep science storytelling, and a passionate community."
-                : "इंटरैक्टिव टूल्स, गहन विज्ञान कहानियों और एक जुनूनी समुदाय के माध्यम से ब्रह्मांड को सुलभ बनाना।"}
+              Making the universe accessible through interactive tools, deep science storytelling, and a passionate community.
             </p>
 
             {/* Social icons */}
@@ -96,16 +92,16 @@ export default function Footer() {
           {/* Explore */}
           <div>
             <h4 className="text-sm font-semibold text-text-primary mb-4">
-              {lang === "en" ? "Explore" : "खोजें"}
+              Explore
             </h4>
             <ul className="space-y-2.5">
               {footerLinks.explore.map((link) => (
-                <li key={link.href + link.label.en}>
+                <li key={link.href + link.label}>
                   <Link
                     href={link.href}
                     className="text-sm text-text-muted hover:text-text-secondary transition-colors"
                   >
-                    {link.label[lang]}
+                    {link.label}
                   </Link>
                 </li>
               ))}
@@ -115,16 +111,16 @@ export default function Footer() {
           {/* Learn */}
           <div>
             <h4 className="text-sm font-semibold text-text-primary mb-4">
-              {lang === "en" ? "Learn" : "सीखें"}
+              Learn
             </h4>
             <ul className="space-y-2.5">
               {footerLinks.learn.map((link) => (
-                <li key={link.href + link.label.en}>
+                <li key={link.href + link.label}>
                   <Link
                     href={link.href}
                     className="text-sm text-text-muted hover:text-text-secondary transition-colors"
                   >
-                    {link.label[lang]}
+                    {link.label}
                   </Link>
                 </li>
               ))}
@@ -134,16 +130,16 @@ export default function Footer() {
           {/* Legal */}
           <div>
             <h4 className="text-sm font-semibold text-text-primary mb-4">
-              {lang === "en" ? "Legal" : "कानूनी"}
+              Legal
             </h4>
             <ul className="space-y-2.5">
               {footerLinks.legal.map((link) => (
-                <li key={link.href + link.label.en}>
+                <li key={link.href + link.label}>
                   <Link
                     href={link.href}
                     className="text-sm text-text-muted hover:text-text-secondary transition-colors"
                   >
-                    {link.label[lang]}
+                    {link.label}
                   </Link>
                 </li>
               ))}
@@ -154,27 +150,24 @@ export default function Footer() {
         {/* Amazon Affiliate Disclaimer */}
         <div className="mt-10 pt-6 border-t border-white/[0.06]">
           <p className="text-[11px] text-text-muted text-center max-w-2xl mx-auto leading-relaxed">
-            {lang === "en"
-              ? "As an Amazon Associate, I earn from qualifying purchases. Product prices and availability are subject to change."
-              : "एक Amazon Associate के रूप में, मैं योग्य खरीदारी से कमाई करता/करती हूँ। उत्पाद की कीमतें और उपलब्धता परिवर्तन के अधीन हैं।"}
+            As an Amazon Associate, I earn from qualifying purchases. Product prices and availability are subject to change.
           </p>
         </div>
 
         {/* Bottom bar */}
         <div className="mt-6 pt-6 border-t border-white/[0.06] flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-text-muted">
-            © {new Date().getFullYear()} ScienceHindi 360.{" "}
-            {lang === "en" ? "All rights reserved." : "सर्वाधिकार सुरक्षित।"}
+            © {new Date().getFullYear()} ScienceHindi 360. All rights reserved.
           </p>
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1.5 text-xs text-text-muted">
               <span className="w-1.5 h-1.5 rounded-full bg-neon-green animate-pulse" />
-              {lang === "en" ? "Systems operational" : "सिस्टम चालू"}
+              Systems operational
             </span>
             <span className="text-xs text-text-muted">
-              {lang === "en" ? "Made with" : "बनाया गया"}{" "}
+              Made with{" "}
               <span className="text-neon-pink">♥</span>{" "}
-              {lang === "en" ? "for science" : "विज्ञान के लिए"}
+              for science
             </span>
           </div>
         </div>

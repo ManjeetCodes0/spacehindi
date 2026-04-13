@@ -87,17 +87,17 @@ export default function Newsletter({ lang, onSubscribe }: NewsletterProps) {
           >
             {t.title}
           </h2>
-          <p className="text-text-secondary mb-8">{t.subtitle}</p>
+          <p className="text-text-primary/80 mb-8">{t.subtitle}</p>
 
           {/* Perks grid */}
           <div className="grid grid-cols-2 gap-3 mb-8 max-w-md mx-auto">
             {t.perks.map((perk, i) => (
               <div
                 key={i}
-                className="flex items-center gap-2.5 p-3 rounded-xl bg-white/[0.03] border border-white/[0.05]"
+                className="flex items-center gap-2.5 p-3 rounded-xl bg-space-elevated/70 border border-space-border"
               >
                 <span className="text-lg">{perk.icon}</span>
-                <span className="text-xs font-medium text-text-secondary">{perk.label}</span>
+                <span className="text-xs font-medium text-text-primary/80">{perk.label}</span>
               </div>
             ))}
           </div>
@@ -126,7 +126,7 @@ export default function Newsletter({ lang, onSubscribe }: NewsletterProps) {
                 type="submit"
                 className="
                   px-6 py-3 rounded-xl text-sm font-semibold text-white cursor-pointer
-                  bg-gradient-to-r from-neon-violet to-neon-blue
+                  bg-linear-to-r from-neon-violet to-neon-blue
                   shadow-[0_0_20px_rgba(139,92,246,0.3)]
                   hover:shadow-[0_0_30px_rgba(139,92,246,0.5)]
                   transition-shadow duration-300
@@ -174,7 +174,7 @@ export default function Newsletter({ lang, onSubscribe }: NewsletterProps) {
             className="
               inline-flex items-center gap-2 px-6 py-3 rounded-xl
               text-sm font-semibold text-white cursor-pointer
-              bg-gradient-to-r from-neon-pink to-neon-pink-glow
+              bg-linear-to-r from-neon-pink to-neon-pink-glow
               shadow-[0_0_20px_rgba(236,72,153,0.3)]
               hover:shadow-[0_0_35px_rgba(236,72,153,0.5)]
               transition-shadow duration-300
@@ -193,8 +193,8 @@ export default function Newsletter({ lang, onSubscribe }: NewsletterProps) {
               inline-flex items-center gap-2 px-6 py-3 rounded-xl
               text-sm font-semibold cursor-pointer
               text-neon-violet border border-neon-violet/40
-              bg-neon-violet/[0.05]
-              hover:bg-neon-violet/[0.1] hover:border-neon-violet/60
+              bg-neon-violet/5
+              hover:bg-neon-violet/10 hover:border-neon-violet/60
               shadow-[0_0_15px_rgba(139,92,246,0.1)]
               hover:shadow-[0_0_25px_rgba(139,92,246,0.25)]
               transition-all duration-300

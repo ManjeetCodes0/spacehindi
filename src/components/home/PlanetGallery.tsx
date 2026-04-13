@@ -226,6 +226,8 @@ export default function PlanetGallery({ lang }: PlanetGalleryProps) {
               animate={{ scale: isSelected ? 1 : 0.85, opacity: isSelected ? 1 : 0.5 }}
               transition={{ duration: 0.3 }}
               className="flex flex-col items-center gap-2 shrink-0 cursor-pointer group"
+              aria-label={`Explore ${planet.name.en} — ${planet.name.hi}`}
+              aria-pressed={isSelected}
             >
               <div
                 className="rounded-full relative transition-all duration-300 pointer-events-none flex items-center justify-center"
@@ -243,7 +245,7 @@ export default function PlanetGallery({ lang }: PlanetGalleryProps) {
                 {planetsWithImages.has(planet.id) ? (
                   <Image
                     src={planet.id === "moon" ? "/universe/moons/earth/Moon-earth.png" : `/universe/planets/${planet.id}/${planet.id}1.png`}
-                    alt={planet.name[lang]}
+                    alt={`3D render of planet ${planet.name.en} — ${planetFacts[planet.id]?.fact.en || planet.name.en} in our solar system`}
                     fill
                     unoptimized
                     style={{ objectFit: "contain", filter: isSelected ? `drop-shadow(0 0 20px ${planet.color}80)` : 'none' }}
@@ -312,7 +314,7 @@ export default function PlanetGallery({ lang }: PlanetGalleryProps) {
                 {hasSelectedImage ? (
                   <Image
                     src={selected === "moon" ? "/universe/moons/earth/Moon-earth.png" : `/universe/planets/${selected}/${selected}1.png`}
-                    alt={selectedPlanet.name[lang]}
+                    alt={`Detailed 3D view of ${selectedPlanet.name.en} — diameter ${facts.diameter}, ${facts.moons} moons, ${facts.type.en} planet`}
                     fill
                     unoptimized
                     style={{ objectFit: "contain", filter: `drop-shadow(0 15px 30px ${selectedPlanet.color}80)` }}

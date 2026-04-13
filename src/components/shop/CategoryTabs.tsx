@@ -27,17 +27,11 @@ export default function CategoryTabs({ active, onChange, lang }: CategoryTabsPro
           <button
             key={tab.id}
             onClick={() => onChange(tab.id)}
-            className="relative px-5 py-2.5 rounded-xl text-sm font-semibold cursor-pointer transition-all duration-300"
-            style={{
-              background: isActive ? "rgba(139,92,246,0.12)" : "rgba(255,255,255,0.03)",
-              border: isActive
-                ? "1.5px solid rgba(168,130,255,0.8)"
-                : "1px solid rgba(255,255,255,0.08)",
-              color: isActive ? "#c4b5fd" : "#a1a1aa",
-              boxShadow: isActive
-                ? "0 0 18px rgba(139,92,246,0.35), inset 0 0 12px rgba(139,92,246,0.06)"
-                : "none",
-            }}
+            className={`relative px-5 py-2.5 rounded-xl text-sm font-semibold cursor-pointer transition-all duration-300 ${
+              isActive
+                ? "bg-neon-violet/12 border border-neon-violet/70 text-neon-violet shadow-[0_0_18px_rgba(139,92,246,0.35)]"
+                : "bg-space-elevated/70 border border-space-border text-text-muted hover:text-text-secondary hover:border-neon-violet/30"
+            }`}
           >
             {tab.label[lang]}
             {isActive && (

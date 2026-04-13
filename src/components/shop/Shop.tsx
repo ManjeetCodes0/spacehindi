@@ -66,8 +66,8 @@ export default function Shop({ lang }: ShopProps) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4"
-          style={{ fontFamily: "var(--font-space-grotesk)", color: "#f5f5f7" }}
+          className="text-3xl sm:text-4xl md:text-5xl font-bold text-text-primary mb-4"
+          style={{ fontFamily: "var(--font-space-grotesk)" }}
         >
           {t.title}
         </motion.h2>
@@ -77,8 +77,7 @@ export default function Shop({ lang }: ShopProps) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.15 }}
-          className="text-base sm:text-lg"
-          style={{ color: "#d4d4d8" }}
+          className="text-base sm:text-lg text-text-secondary"
         >
           {t.subtitle}
         </motion.p>
@@ -101,18 +100,16 @@ export default function Shop({ lang }: ShopProps) {
               {/* Section heading */}
               <div className="mb-8">
                 <h3
-                  className="text-2xl sm:text-3xl font-bold mb-2"
+                  className="text-2xl sm:text-3xl font-bold text-text-primary mb-2"
                   style={{
                     fontFamily: "var(--font-space-grotesk)",
-                    color: "#f5f5f7",
                   }}
                 >
                   {section.heading[lang]}
                 </h3>
                 <p
-                  className="text-sm sm:text-base"
+                  className="text-sm sm:text-base text-text-muted"
                   style={{
-                    color: "#a1a1aa",
                     fontFamily: lang === "hi"
                       ? "var(--font-noto-sans-devanagari), system-ui"
                       : "var(--font-inter), system-ui",

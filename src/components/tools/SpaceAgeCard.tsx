@@ -13,9 +13,9 @@ interface SpaceAgeCardProps {
 }
 
 const sizeMap = {
-  sm: "w-12 h-12",
-  md: "w-16 h-16",
-  lg: "w-20 h-20",
+  sm: "w-16 h-16 md:w-24 md:h-24 xl:w-28 xl:h-28",
+  md: "w-20 h-20 md:w-28 md:h-28 xl:w-32 xl:h-32",
+  lg: "w-24 h-24 md:w-32 md:h-32 xl:w-40 xl:h-40",
 };
 
 export default function SpaceAgeCard({
@@ -34,70 +34,53 @@ export default function SpaceAgeCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05, duration: 0.4, ease: "easeOut" as const }}
       className="
-        flex flex-col items-center gap-3 p-4 sm:p-5 rounded-2xl
-        bg-[rgba(17,17,40,0.5)] backdrop-blur-sm
-        border border-white/[0.06]
-        hover:border-white/[0.12] hover:bg-[rgba(17,17,40,0.7)]
+        flex flex-col items-center gap-2 p-6 md:p-8 rounded-[2rem]
+        bg-[rgba(17,17,40,0.5)] backdrop-blur-xl
+        border border-white/[0.08] shadow-xl
+        hover:border-white/[0.2] hover:bg-[rgba(17,17,40,0.8)] hover:shadow-2xl hover:-translate-y-2
         transition-all duration-300 group
-        min-w-[120px]
+        w-full
       "
     >
-      {/* Planet sphere */}
-      <div className="relative">
-        <div
-          className={`${sizeMap[planet.size]} rounded-full relative`}
-          style={{
-            background: planet.gradient,
-            boxShadow: `inset -4px -2px 8px rgba(0,0,0,0.4), 0 0 20px ${planet.color}20`,
-          }}
-        >
-          {/* Light reflection */}
-          <div
-            className="absolute top-[15%] left-[20%] w-[30%] h-[25%] rounded-full"
-            style={{
-              background:
-                "radial-gradient(ellipse, rgba(255,255,255,0.15) 0%, transparent 70%)",
-              filter: "blur(2px)",
-            }}
-          />
-          {/* Ring for Saturn/Uranus */}
-          {planet.ring && (
-            <div
-              className="absolute inset-[-25%] rounded-full border border-white/10 pointer-events-none"
-              style={{ transform: "rotateX(75deg)" }}
-            />
-          )}
+      <div className="relative group w-full flex justify-center">
+        <div className={`relative ${sizeMap[planet.size]} group-hover:scale-110 transition-transform duration-700`}>
+           <img 
+              src={`/universe/planets/${planet.id}/${planet.id}1.png`}
+              alt={planet.name.en}
+              className="w-full h-full object-contain animate-[spin_40s_linear_infinite] group-hover:animate-[spin_40s_linear_infinite_reverse]"
+           />
+           {/* Glow subtle pulse behind planet */}
+           <div 
+             className="absolute inset-0 rounded-full blur-md opacity-30 group-hover:opacity-60 transition-opacity duration-700" 
+             style={{ 
+               backgroundColor: planet.color, 
+               transform: "scale(0.85)",
+               boxShadow: `0 0 20px 2px ${planet.color}80` // dynamic glow
+             }}
+           />
         </div>
-        {/* Glow pulse on hover */}
-        <div
-          className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-          style={{
-            background: `radial-gradient(circle, ${planet.color}15 0%, transparent 70%)`,
-            transform: "scale(1.8)",
-          }}
-        />
       </div>
 
       {/* Planet name */}
-      <p className="text-xs font-medium text-text-muted group-hover:text-text-secondary transition-colors">
+      <p className="text-sm md:text-xl font-bold text-text-muted group-hover:text-text-primary transition-colors uppercase tracking-widest mt-4">
         {planet.name[lang]}
       </p>
 
       {/* Age value */}
-      <div className="text-center">
+      <div className="text-center mt-2 mb-3">
         <p
-          className="text-xl sm:text-2xl font-bold tabular-nums"
+          className="text-4xl md:text-5xl lg:text-6xl font-black tabular-nums drop-shadow-lg"
           style={{ color: planet.color }}
         >
           {earthAgeYears > 0 ? animatedAge : "—"}
         </p>
-        <p className="text-[10px] text-text-muted mt-0.5">
+        <p className="text-[11px] md:text-sm font-bold text-text-muted mt-2 tracking-widest uppercase opacity-70">
           {lang === "en" ? "years" : "वर्ष"}
         </p>
       </div>
 
       {/* Orbital period badge */}
-      <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/[0.04] text-text-muted">
+      <span className="text-[10px] md:text-xs font-semibold px-4 py-1.5 mt-2 rounded-full border border-white/10 bg-white/5 text-text-secondary group-hover:bg-white/10 transition-colors">
         {lang === "en" ? "1 yr" : "1 वर्ष"} = {orbitalPeriod}{" "}
         {lang === "en" ? "Earth yr" : "पृथ्वी वर्ष"}
       </span>

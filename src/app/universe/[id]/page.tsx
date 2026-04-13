@@ -5,9 +5,35 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Navbar, Footer } from "@/components/layout";
-import { CelestialSelector, MoonGallery, PlanetMedia } from "@/components/universe";
+import { CelestialSelector, MoonGallery, PlanetMedia, PlanetArticle } from "@/components/universe";
 import { getCelestialBody, celestialBodies } from "@/data/universe/planets";
 import { useLang } from "@/context/LanguageContext";
+import { mercuryArticle } from "@/data/universe/articles/mercury";
+
+/* JSON-LD structured data for Mercury article SEO */
+const mercuryJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: mercuryArticle.title,
+  description: mercuryArticle.metaDescription,
+  image: "https://spacehindi.in/universe/planets/mercury/mercury1.png",
+  datePublished: "2026-04-12",
+  dateModified: mercuryArticle.lastUpdated,
+  author: { "@type": "Organization", name: "Space Hindi" },
+  publisher: { "@type": "Organization", name: "Space Hindi" },
+  mainEntityOfPage: { "@type": "WebPage", "@id": "https://spacehindi.in/universe/mercury" },
+  inLanguage: "hi",
+};
+
+const mercuryFaqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: mercuryArticle.faqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.question,
+    acceptedAnswer: { "@type": "Answer", text: faq.answer },
+  })),
+};
 
 const statMeta: Record<string, { en: string; hi: string }> = {
   diameter:    { en: "Diameter",   hi: "व्यास"        },
@@ -46,6 +72,28 @@ export default function PlanetPage() {
 
   return (
     <>
+      {/* SEO: JSON-LD structured data for Mercury */}
+      {id === "mercury" && (
+        <>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(mercuryJsonLd) }}
+          />
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(mercuryFaqJsonLd) }}
+          />
+          <title>{mercuryArticle.metaTitle}</title>
+          <meta name="description" content={mercuryArticle.metaDescription} />
+          <meta name="keywords" content={mercuryArticle.keywords.join(", ")} />
+          <meta property="og:title" content={mercuryArticle.metaTitle} />
+          <meta property="og:description" content={mercuryArticle.metaDescription} />
+          <meta property="og:image" content="/universe/planets/mercury/mercury1.png" />
+          <meta property="og:type" content="article" />
+          <link rel="canonical" href="https://spacehindi.in/universe/mercury" />
+        </>
+      )}
+
       <Navbar />
 
       <main className="bg-[#050a12]">
@@ -365,6 +413,11 @@ export default function PlanetPage() {
           <div className="mt-14">
             <PlanetMedia body={body} lang={lang} />
           </div>
+
+          {/* Planet Article — Mercury */}
+          {id === "mercury" && (
+            <PlanetArticle article={mercuryArticle} planetColor={body.color} />
+          )}
 
           {/* Bottom Prev / Next */}
           <div className="mt-20 flex flex-col sm:flex-row items-center justify-between gap-6">

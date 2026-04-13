@@ -81,9 +81,9 @@ export default function ToolsShowcase({ lang }: ToolsShowcaseProps) {
               <div
                 className="
                   relative h-full p-6 rounded-2xl overflow-hidden
-                  bg-[rgba(17,17,40,0.55)] backdrop-blur-xl
-                  border border-white/[0.07]
-                  hover:border-white/[0.15]
+                  bg-space-elevated/70 backdrop-blur-xl
+                  border border-space-border
+                  hover:border-neon-cyan/35
                   transition-all duration-300
                   cursor-pointer
                 "
@@ -123,7 +123,7 @@ export default function ToolsShowcase({ lang }: ToolsShowcaseProps) {
 
                 {/* Name */}
                 <h3
-                  className="text-lg font-semibold text-text-primary mb-2 group-hover:text-white transition-colors"
+                  className="text-lg font-semibold text-text-primary mb-2 group-hover:text-neon-cyan transition-colors"
                   style={{ fontFamily: "var(--font-space-grotesk)" }}
                 >
                   {tool.name[lang]}
@@ -167,8 +167,8 @@ export default function ToolsShowcase({ lang }: ToolsShowcaseProps) {
             inline-flex items-center gap-2 px-6 py-3 rounded-xl
             text-sm font-semibold
             text-neon-cyan border border-neon-cyan/30
-            bg-neon-cyan/[0.05]
-            hover:bg-neon-cyan/[0.1] hover:border-neon-cyan/50
+            bg-neon-cyan/5
+            hover:bg-neon-cyan/10 hover:border-neon-cyan/50
             shadow-[0_0_15px_rgba(6,182,212,0.1)]
             hover:shadow-[0_0_25px_rgba(6,182,212,0.2)]
             transition-all duration-300

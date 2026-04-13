@@ -4,22 +4,18 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { useLang } from "@/context/LanguageContext";
-import { useTheme } from "@/context/ThemeContext";
 import { useAuth } from "@/context/AuthContext";
 
 const navLinks = [
-  { href: "/", label: { en: "Home", hi: "होम" } },
-  { href: "/universe", label: { en: "Universe", hi: "ब्रह्मांड" } },
-  { href: "/tools", label: { en: "Tools", hi: "उपकरण" } },
-  { href: "/shop", label: { en: "Shop", hi: "शॉप" } },
-  { href: "/blog", label: { en: "Blog", hi: "ब्लॉग" } },
-  { href: "/events", label: { en: "Live Events", hi: "लाइव इवेंट्स" } },
+  { href: "/", label: "Home" },
+  { href: "/universe", label: "Universe" },
+  { href: "/tools", label: "Tools" },
+  { href: "/shop", label: "Shop" },
+  { href: "/blog", label: "Blog" },
+  { href: "/events", label: "Live Events" },
 ];
 
 export default function Navbar() {
-  const { lang, toggleLang } = useLang();
-  const { theme, toggleTheme } = useTheme();
   const { user, loading: authLoading, logout } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -43,9 +39,6 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const isDark = theme === "dark";
-  const t = lang === "en" ? navEn : navHi;
-
   return (
     <motion.nav
       initial={{ y: -100 }}
@@ -54,17 +47,11 @@ export default function Navbar() {
       className={`
         fixed top-0 left-0 right-0 z-50
         transition-all duration-300 ease-out
-        ${
-          scrolled
-            ? "backdrop-blur-2xl shadow-sm"
-            : "bg-transparent"
-        }
+        ${scrolled ? "backdrop-blur-2xl shadow-sm" : "bg-transparent"}
       `}
       style={{
-        backgroundColor: scrolled
-          ? isDark ? "rgba(0,0,0,0.85)" : "rgba(255,255,255,0.9)"
-          : "transparent",
-        borderBottom: scrolled ? `1px solid ${isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)"}` : "none",
+        backgroundColor: scrolled ? "rgba(0,0,0,0.85)" : "transparent",
+        borderBottom: scrolled ? "1px solid rgba(255,255,255,0.06)" : "none",
       }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -92,8 +79,8 @@ export default function Navbar() {
                 className="relative px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-lg group"
                 style={{ color: "var(--text-secondary)" }}
               >
-                <span className="group-hover:text-[var(--text-primary)] transition-colors">
-                  {link.label[lang]}
+                <span className="group-hover:text-text-primary transition-colors">
+                  {link.label}
                 </span>
                 <span
                   className="absolute bottom-0.5 left-4 right-4 h-px scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"
@@ -105,63 +92,9 @@ export default function Navbar() {
 
           {/* Right Actions */}
           <div className="flex items-center gap-2">
-            {/* Theme Toggle */}
-            <button
-              onClick={toggleTheme}
-              className="flex items-center justify-center w-8 h-8 rounded-full transition-all duration-300 cursor-pointer"
-              style={{
-                background: isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)",
-                color: "var(--text-secondary)",
-              }}
-              aria-label="Toggle theme"
-            >
-              {isDark ? (
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
-                </svg>
-              ) : (
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
-                </svg>
-              )}
-            </button>
-
-            {/* Language Toggle */}
-            <button
-              onClick={toggleLang}
-              className="relative flex items-center w-[64px] h-8 rounded-full transition-all duration-300 cursor-pointer overflow-hidden"
-              style={{
-                background: isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)",
-                border: `1px solid ${isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)"}`,
-              }}
-              aria-label="Toggle language"
-            >
-              <motion.div
-                className="absolute w-[30px] h-[24px] rounded-full"
-                style={{
-                  background: "var(--accent-muted)",
-                  border: "1px solid var(--accent)",
-                }}
-                animate={{ x: lang === "en" ? 2 : 32 }}
-                transition={{ type: "spring", stiffness: 500, damping: 30 }}
-              />
-              <span
-                className="relative z-10 flex-1 text-center text-xs font-semibold transition-colors duration-200"
-                style={{ color: lang === "en" ? "var(--accent)" : "var(--text-muted)" }}
-              >
-                EN
-              </span>
-              <span
-                className="relative z-10 flex-1 text-center text-xs font-semibold transition-colors duration-200"
-                style={{ color: lang === "hi" ? "var(--accent)" : "var(--text-muted)" }}
-              >
-                हि
-              </span>
-            </button>
-
             {/* Profile / Login Button */}
             {authLoading ? (
-              <div className="w-9 h-9 rounded-full animate-pulse" style={{ background: isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)" }} />
+              <div className="w-9 h-9 rounded-full animate-pulse" style={{ background: "rgba(255,255,255,0.06)" }} />
             ) : user ? (
               <div className="relative" ref={profileRef}>
                 <button
@@ -202,19 +135,19 @@ export default function Navbar() {
                       transition={{ duration: 0.15 }}
                       className="absolute right-0 mt-2 w-56 rounded-xl overflow-hidden shadow-2xl"
                       style={{
-                        backgroundColor: isDark ? "rgba(15,15,15,0.98)" : "rgba(255,255,255,0.98)",
-                        border: `1px solid ${isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)"}`,
+                        backgroundColor: "rgba(15,15,15,0.98)",
+                        border: "1px solid rgba(255,255,255,0.08)",
                         backdropFilter: "blur(20px)",
                       }}
                     >
                       {/* User info header */}
                       <div
                         className="px-4 py-3"
-                        style={{ borderBottom: `1px solid ${isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)"}` }}
+                        style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}
                       >
                         <div className="flex items-center gap-2">
                           <p className="text-sm font-medium truncate" style={{ color: "var(--text-primary)" }}>
-                            {user.displayName || t.user}
+                            {user.displayName || "User"}
                           </p>
                           {user.subscriptionSource === "facebook" && (
                             <span
@@ -235,24 +168,22 @@ export default function Navbar() {
 
                       {/* Menu items */}
                       <div className="py-1">
-                        <DropdownLink href="/profile" icon={ProfileIcon} label={t.myProfile} isDark={isDark} onClick={() => setProfileOpen(false)} />
-                        <DropdownLink href="/settings" icon={SettingsIcon} label={t.settings} isDark={isDark} onClick={() => setProfileOpen(false)} />
+                        <DropdownLink href="/profile" icon={ProfileIcon} label="My Profile" onClick={() => setProfileOpen(false)} />
+                        <DropdownLink href="/settings" icon={SettingsIcon} label="Settings" onClick={() => setProfileOpen(false)} />
                       </div>
 
                       {/* Logout */}
-                      <div style={{ borderTop: `1px solid ${isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)"}` }}>
+                      <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
                         <button
                           onClick={async () => {
                             setProfileOpen(false);
                             await logout();
                           }}
-                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors cursor-pointer"
+                          className="w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors cursor-pointer hover:bg-white/[0.04]"
                           style={{ color: "#f87171" }}
-                          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.04)")}
-                          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
                         >
                           <LogoutIcon />
-                          {t.logout}
+                          Logout
                         </button>
                       </div>
                     </motion.div>
@@ -271,7 +202,7 @@ export default function Navbar() {
                 <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
                 </svg>
-                {t.login}
+                Login
               </Link>
             )}
 
@@ -311,8 +242,8 @@ export default function Navbar() {
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="md:hidden overflow-hidden backdrop-blur-2xl"
             style={{
-              backgroundColor: isDark ? "rgba(0,0,0,0.95)" : "rgba(255,255,255,0.97)",
-              borderBottom: `1px solid ${isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)"}`,
+              backgroundColor: "rgba(0,0,0,0.95)",
+              borderBottom: "1px solid rgba(255,255,255,0.06)",
             }}
           >
             <div className="px-4 py-4 space-y-1">
@@ -329,7 +260,7 @@ export default function Navbar() {
                     className="block px-4 py-3 text-sm font-medium rounded-xl transition-colors"
                     style={{ color: "var(--text-secondary)" }}
                   >
-                    {link.label[lang]}
+                    {link.label}
                   </Link>
                 </motion.div>
               ))}
@@ -340,7 +271,7 @@ export default function Navbar() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: navLinks.length * 0.05 }}
                 className="pt-2"
-                style={{ borderTop: `1px solid ${isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)"}` }}
+                style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
               >
                 {authLoading ? null : user ? (
                   <div className="space-y-1">
@@ -350,7 +281,7 @@ export default function Navbar() {
                       className="block px-4 py-3 text-sm font-medium rounded-xl transition-colors"
                       style={{ color: "var(--text-secondary)" }}
                     >
-                      {t.myProfile}
+                      My Profile
                     </Link>
                     <Link
                       href="/settings"
@@ -358,7 +289,7 @@ export default function Navbar() {
                       className="block px-4 py-3 text-sm font-medium rounded-xl transition-colors"
                       style={{ color: "var(--text-secondary)" }}
                     >
-                      {t.settings}
+                      Settings
                     </Link>
                     <button
                       onClick={async () => {
@@ -368,7 +299,7 @@ export default function Navbar() {
                       className="w-full text-left px-4 py-3 text-sm font-medium rounded-xl transition-colors cursor-pointer"
                       style={{ color: "#f87171" }}
                     >
-                      {t.logout}
+                      Logout
                     </button>
                   </div>
                 ) : (
@@ -378,7 +309,7 @@ export default function Navbar() {
                     className="block px-4 py-3 text-sm font-medium rounded-xl transition-colors"
                     style={{ color: "#8b5cf6" }}
                   >
-                    {t.login}
+                    Login
                   </Link>
                 )}
               </motion.div>
@@ -391,21 +322,18 @@ export default function Navbar() {
 }
 
 /* ─── Dropdown Link ─── */
-function DropdownLink({ href, icon: Icon, label, isDark, onClick }: {
+function DropdownLink({ href, icon: Icon, label, onClick }: {
   href: string;
   icon: React.FC;
   label: string;
-  isDark: boolean;
   onClick: () => void;
 }) {
   return (
     <Link
       href={href}
       onClick={onClick}
-      className="flex items-center gap-3 px-4 py-2.5 text-sm transition-colors"
+      className="flex items-center gap-3 px-4 py-2.5 text-sm transition-colors hover:bg-white/[0.04]"
       style={{ color: "var(--text-secondary)" }}
-      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.04)")}
-      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
     >
       <Icon />
       {label}
@@ -438,20 +366,3 @@ function LogoutIcon() {
     </svg>
   );
 }
-
-/* ─── Translations ─── */
-const navEn = {
-  login: "Login",
-  myProfile: "My Profile",
-  settings: "Settings",
-  logout: "Logout",
-  user: "User",
-};
-
-const navHi = {
-  login: "लॉगिन",
-  myProfile: "मेरी प्रोफ़ाइल",
-  settings: "सेटिंग्स",
-  logout: "लॉगआउट",
-  user: "उपयोगकर्ता",
-};
